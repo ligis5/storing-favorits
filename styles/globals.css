@@ -1,16 +1,16 @@
-html,
+.header {
+  display: flex;
+  justify-content: space-between;
+  height: 5vh;
+  align-items: center;
+}
+
+.login {
+  display: flex;
+  width: calc(5vw + 15vh);
+  max-width: 150px;
+  justify-content: space-between;
+}
 body {
-  padding: 0;
-  margin: 0;
-  font-family: -apple-system, BlinkMacSystemFont, Segoe UI, Roboto, Oxygen,
-    Ubuntu, Cantarell, Fira Sans, Droid Sans, Helvetica Neue, sans-serif;
-}
-
-a {
-  color: inherit;
-  text-decoration: none;
-}
-
-* {
-  box-sizing: border-box;
+  background: url("../public/background.jpg") no-repeat center center fixed;
 }
