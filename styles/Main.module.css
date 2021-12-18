@@ -1,0 +1,20 @@
+.folders {
+  margin-top: 50px;
+  display: flex;
+  align-items: center;
+  gap: 5vw;
+  width: 100%;
+  border-top: 1px solid black;
+  border-bottom: 1px solid black;
+}
+
+.links {
+  margin-left: 5px;
+  margin-top: 50px;
+  display: grid;
+  grid-template-columns: repeat(30, auto);
+}
+.emptyLink {
+  font-size: calc(1.5vh + 1.5vw);
+  filter: drop-shadow(1px 1px red);
+}

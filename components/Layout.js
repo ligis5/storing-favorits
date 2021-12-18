@@ -15,7 +15,7 @@ const Layout = ({ children, title, description }) => {
         />
       </Head>
       <header className="header">
-        <Link href="main">
+        <Link href="/main">
           <a>
             <Image width="50%" height="50%" alt="folder" src={folderIcon} />
           </a>
