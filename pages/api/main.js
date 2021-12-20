@@ -1,21 +1,15 @@
-// Next.js API route support: https://nextjs.org/docs/api-routes/introduction
-const { getFirestore, collection, getDoc } = require("firebase/firestore");
+const { db } = require("../../components/firebase/initializeServerSide");
 
-const db = getFirestore();
-
-const doc = db.collection("users");
-
-const observer = doc.onSnapshot(
-  (docSnapshot) => {
-    console.log(`Received doc snapshot: ${docSnapshot}`);
-    // ...
-  },
-  (err) => {
-    console.log(`Encountered error: ${err}`);
+export default async (req, res) => {
+  const allData = [];
+  const snapshot = await db.collection("users").get();
+  snapshot.forEach((doc) => {
+    allData.push(doc.data());
+  });
+  if (req.method === "GET") {
+    res.status(200).json({ allData });
+  } else {
+    res.setHeader("Allow", ["GET"]);
+    res.status(405).json({ message: `Method ${req.method} is not allowed` });
   }
-);
-
-export default function handler(req, res) {
-  res.status(200).json({ name: "John Doe" });
-}
-console.log("hi");
+};

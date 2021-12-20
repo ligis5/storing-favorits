@@ -1,7 +1,8 @@
 import styles from "../styles/Register.module.css";
 import Layout from "../components/Layout";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useAuth } from "../components/firebase/authenticate";
+import { url } from "../url";
 
 const RegisterPage = () => {
   const { register, formContainer } = styles;
@@ -11,8 +12,9 @@ const RegisterPage = () => {
   const [repeatPassword, setRepeatPassword] = useState("");
   const [text, setText] = useState("");
   const [visible, setVisible] = useState("none");
+  const [registered, setRegistered] = useState(false);
 
-  const { registerUser } = useAuth();
+  const { registerUser, user } = useAuth();
 
   const submitRegistration = async (e) => {
     e.preventDefault();
@@ -23,11 +25,7 @@ const RegisterPage = () => {
     if (password === repeatPassword) {
       try {
         await registerUser(email, password);
-        setVisible("none");
-        setUsername("");
-        setEmail("");
-        setPassword("");
-        setRepeatPassword("");
+        setRegistered(true);
       } catch (error) {
         if (error.code === "auth/email-already-in-use") {
           setText("This email is already registered, use different email");
@@ -39,6 +37,28 @@ const RegisterPage = () => {
       }
     }
   };
+
+  const sendUserData = async () => {
+    const res = await fetch(`${url}/api/register`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ email, username, userId: user.uid }),
+    });
+    setVisible("none");
+    setUsername("");
+    setEmail("");
+    setPassword("");
+    setRepeatPassword("");
+  };
+
+  useEffect(() => {
+    if (user.uid && registered) {
+      sendUserData();
+    }
+    return () => setRegistered(false);
+  }, [registered]);
 
   return (
     <Layout>
