@@ -22,10 +22,10 @@ const Layout = ({ children, title, description }) => {
         </Link>
         <div className="login">
           <Link href="/register">
-            <h3>Register</h3>
+            <h3 style={{ cursor: "pointer" }}>Register</h3>
           </Link>
           <Link href="login">
-            <h3>Login</h3>
+            <h3 style={{ cursor: "pointer" }}>Login</h3>
           </Link>
         </div>
       </header>

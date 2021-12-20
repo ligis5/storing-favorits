@@ -1,5 +1,10 @@
 import { initializeApp } from "firebase/app";
-import { getAuth, createUserWithEmailAndPassword } from "firebase/auth";
+import {
+  getAuth,
+  createUserWithEmailAndPassword,
+  signInWithEmailAndPassword,
+  sendPasswordResetEmail,
+} from "firebase/auth";
 import { getAnalytics } from "firebase/analytics";
 
 const firebaseConfig = {
@@ -17,3 +22,5 @@ const analytics = getAnalytics(app);
 
 export const auth = getAuth();
 export const createUserWithPass = createUserWithEmailAndPassword;
+export const loginWithPass = signInWithEmailAndPassword;
+export const forgotPass = sendPasswordResetEmail;

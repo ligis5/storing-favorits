@@ -1,6 +1,11 @@
-import { Children, createContext, useContext } from "react";
+import { createContext, useContext } from "react";
 import { useState } from "react/cjs/react.development";
-import { auth, createUserWithPass } from "./initialize";
+import {
+  auth,
+  createUserWithPass,
+  loginWithPass,
+  forgotPass,
+} from "./initialize";
 
 const AuthContext = createContext();
 
@@ -9,26 +14,28 @@ export const useAuth = () => {
 };
 
 const AuthenticationProvider = ({ children }) => {
-  const [user, setUser] = useState("hello");
+  const [user, setUser] = useState("");
 
-  const registerUsingPassword = (email, password) => {
-    createUserWithPass(auth, email, password)
-      .then((userCredential) => {
-        setUser(userCredential.user);
-      })
-      .catch((err) => {
-        const errorCode = err.code;
-        const errorMessage = err.message;
-        console.log(
-          "error Code:" + " " + errorCode,
-          "error Message:" + " " + errorMessage
-        );
-      });
+  const registerUser = (email, password) => {
+    return createUserWithPass(auth, email, password).then((userCredential) => {
+      setUser(userCredential.user);
+    });
+  };
+  const loginUser = (email, password) => {
+    return loginWithPass(auth, email, password).then((userCredential) => {
+      setUser(userCredential.user);
+    });
+  };
+
+  const forgotPassword = (email) => {
+    return forgotPass(auth, email);
   };
 
   const data = {
     user,
-    registerUsingPassword,
+    registerUser,
+    loginUser,
+    forgotPassword,
   };
 
   return <AuthContext.Provider value={data}>{children}</AuthContext.Provider>;

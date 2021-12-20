@@ -9,17 +9,35 @@ const RegisterPage = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [repeatPassword, setRepeatPassword] = useState("");
+  const [text, setText] = useState("");
+  const [visible, setVisible] = useState("none");
 
-  const { registerUsingPassword } = useAuth();
+  const { registerUser } = useAuth();
 
-  const submitRegistration = (e) => {
-    if (password === repeatPassword) {
-      registerUsingPassword(email, password);
-    } else {
-      console.log("passwords don't match");
-    }
-
+  const submitRegistration = async (e) => {
     e.preventDefault();
+    if (password != repeatPassword) {
+      setText("Passwords don't match");
+      setVisible("flex");
+    }
+    if (password === repeatPassword) {
+      try {
+        await registerUser(email, password);
+        setVisible("none");
+        setUsername("");
+        setEmail("");
+        setPassword("");
+        setRepeatPassword("");
+      } catch (error) {
+        if (error.code === "auth/email-already-in-use") {
+          setText("This email is already registered, use different email");
+          setVisible("flex");
+        } else {
+          setText("Sorry an error has occurred please try again");
+          setVisible("flex");
+        }
+      }
+    }
   };
 
   return (
@@ -35,7 +53,7 @@ const RegisterPage = () => {
               <input
                 required
                 type="text"
-                maxLength="32"
+                maxLength="64"
                 minLength="4"
                 id="username-input"
                 value={username}
@@ -54,6 +72,7 @@ const RegisterPage = () => {
             </div>
             <div>
               <h5>Password</h5>
+              <h6 style={{ display: visible }}>{text}</h6>
               <input
                 required
                 type="password"
@@ -66,6 +85,7 @@ const RegisterPage = () => {
             </div>
             <div>
               <h5>Repeat Password</h5>
+              <h6 style={{ display: visible }}>{text}</h6>
               <input
                 required
                 type="password"
