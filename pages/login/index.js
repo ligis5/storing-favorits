@@ -2,8 +2,10 @@ import styles from "../../styles/Login.module.css";
 import Layout from "../../components/Layout";
 import { useState } from "react";
 import { useAuth } from "../../components/firebase/authenticate";
+import { useRouter } from "next/router";
 
 const LoginPage = () => {
+  const router = useRouter();
   const { login, formContainer } = styles;
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -19,6 +21,7 @@ const LoginPage = () => {
       setVisible("none");
       setEmail("");
       setPassword("");
+      router.push("/main");
     } catch (error) {
       setText("Wrong email or password");
       setVisible("flex");

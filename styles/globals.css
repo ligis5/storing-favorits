@@ -1,5 +1,6 @@
 body {
   margin: 0;
+  background: url("../public/background.jpg") no-repeat center center fixed;
 }
 .header {
   display: flex;
@@ -14,7 +15,4 @@ body {
   width: calc(5vw + 15vh);
   max-width: 150px;
   justify-content: space-between;
-}
-body {
-  background: url("../public/background.jpg") no-repeat center center fixed;
 }

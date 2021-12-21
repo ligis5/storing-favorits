@@ -1,4 +1,4 @@
-const { db } = require("../../components/firebase/initializeServerSide");
+const { db } = require("../../../components/firebase/initializeServerSide");
 
 export default async (req, res) => {
   const allData = [];

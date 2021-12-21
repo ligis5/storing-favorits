@@ -1,11 +1,13 @@
 import { createContext, useContext } from "react";
-import { useState } from "react/cjs/react.development";
+import { useState, useEffect } from "react/cjs/react.development";
 import {
-  auth,
-  createUserWithPass,
-  loginWithPass,
-  forgotPass,
-} from "./initialize";
+  createUserWithEmailAndPassword,
+  signInWithEmailAndPassword,
+  sendPasswordResetEmail,
+  signOut,
+  onAuthStateChanged,
+} from "firebase/auth";
+import { auth } from "./initialize";
 
 const AuthContext = createContext();
 
@@ -17,25 +19,46 @@ const AuthenticationProvider = ({ children }) => {
   const [user, setUser] = useState("");
 
   const registerUser = (email, password) => {
-    return createUserWithPass(auth, email, password).then((userCredential) => {
-      setUser(userCredential.user);
-    });
+    return createUserWithEmailAndPassword(auth, email, password);
   };
   const loginUser = (email, password) => {
-    return loginWithPass(auth, email, password).then((userCredential) => {
-      setUser(userCredential.user);
-    });
+    return signInWithEmailAndPassword(auth, email, password);
   };
 
   const forgotPassword = (email) => {
-    return forgotPass(auth, email);
+    return sendPasswordResetEmail(auth, email);
   };
+
+  const logOut = () => {
+    return signOut(auth)
+      .then(() => {
+        setUser("");
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  };
+
+  // check if user is already logged in
+  const checkUser = () => {
+    onAuthStateChanged(auth, (user) => {
+      setUser(user);
+    });
+  };
+
+  useEffect(() => {
+    checkUser();
+    return () => {
+      setUser("");
+    };
+  }, []);
 
   const data = {
     user,
     registerUser,
     loginUser,
     forgotPassword,
+    logOut,
   };
 
   return <AuthContext.Provider value={data}>{children}</AuthContext.Provider>;

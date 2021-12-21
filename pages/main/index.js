@@ -1,5 +1,4 @@
 import {
-  faPlusCircle,
   faCaretSquareLeft,
   faCaretSquareRight,
 } from "@fortawesome/free-solid-svg-icons";
@@ -10,7 +9,7 @@ import Layout from "../../components/Layout";
 import styles from "../../styles/Main.module.css";
 
 const MainPage = () => {
-  const { links, emptyLink, folders } = styles;
+  const { folders } = styles;
   return (
     <Layout>
       <div className={folders}>
@@ -30,14 +29,6 @@ const MainPage = () => {
             filter: "drop-shadow(1px 1px red)",
           }}
         />
-      </div>
-      <div className={links}>
-        <FontAwesomeIcon className={emptyLink} icon={faPlusCircle} />
-        <FontAwesomeIcon className={emptyLink} icon={faPlusCircle} />
-        <FontAwesomeIcon className={emptyLink} icon={faPlusCircle} />
-        <FontAwesomeIcon className={emptyLink} icon={faPlusCircle} />
-        <FontAwesomeIcon className={emptyLink} icon={faPlusCircle} />
-        <FontAwesomeIcon className={emptyLink} icon={faPlusCircle} />
       </div>
     </Layout>
   );

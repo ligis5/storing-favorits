@@ -3,8 +3,10 @@ import Layout from "../components/Layout";
 import { useState, useEffect } from "react";
 import { useAuth } from "../components/firebase/authenticate";
 import { url } from "../url";
+import { useRouter } from "next/router";
 
 const RegisterPage = () => {
+  const router = useRouter();
   const { register, formContainer } = styles;
   const [username, setUsername] = useState("");
   const [email, setEmail] = useState("");
@@ -51,6 +53,7 @@ const RegisterPage = () => {
     setEmail("");
     setPassword("");
     setRepeatPassword("");
+    router.push("/main");
   };
 
   useEffect(() => {

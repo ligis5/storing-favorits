@@ -1,8 +1,4 @@
-import {
-  faFolderPlus,
-  faFolder,
-  faFolderOpen,
-} from "@fortawesome/free-solid-svg-icons";
+import { faFolder, faFolderOpen } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
 const Folder = () => {
@@ -15,7 +11,6 @@ const Folder = () => {
   return (
     <>
       <FontAwesomeIcon style={style} icon={faFolderOpen} />
-      <FontAwesomeIcon style={style} icon={faFolderPlus} />
     </>
   );
 };
