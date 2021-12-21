@@ -39,16 +39,9 @@ const Folders = () => {
     <>
       {folders.map((folder) => {
         return (
-          <Link
-            key={Object.keys(folder)[0]}
-            href={`/main/${Object.keys(folder)[0]}`}
-          >
+          <Link key={folder} href={`/main/${folder}`}>
             <a>
-              <Folder
-                name={Object.keys(folder)[0]}
-                values={Object.values(folder)}
-                key={Object.keys(folder)[0]}
-              />
+              <Folder folder={folder} key={folder} />
             </a>
           </Link>
         );

@@ -14,7 +14,3 @@
   display: grid;
   grid-template-columns: repeat(30, auto);
 }
-.emptyLink {
-  font-size: calc(1.5vh + 1.5vw);
-  filter: drop-shadow(1px 1px red);
-}

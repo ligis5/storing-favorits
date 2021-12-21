@@ -1,16 +1,18 @@
 import {
-  faPlusCircle,
   faCaretSquareLeft,
   faCaretSquareRight,
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-
+import Files from "../../components/files";
 import Folders from "../../components/folders";
 import Layout from "../../components/Layout";
 import styles from "../../styles/Main.module.css";
+import { useRouter } from "next/router";
 
 const FolderMainPage = () => {
-  const { links, emptyLink, folders } = styles;
+  const router = useRouter();
+
+  const { links, folders } = styles;
   return (
     <div>
       <Layout>
@@ -33,12 +35,7 @@ const FolderMainPage = () => {
           />
         </div>
         <div className={links}>
-          <FontAwesomeIcon className={emptyLink} icon={faPlusCircle} />
-          <FontAwesomeIcon className={emptyLink} icon={faPlusCircle} />
-          <FontAwesomeIcon className={emptyLink} icon={faPlusCircle} />
-          <FontAwesomeIcon className={emptyLink} icon={faPlusCircle} />
-          <FontAwesomeIcon className={emptyLink} icon={faPlusCircle} />
-          <FontAwesomeIcon className={emptyLink} icon={faPlusCircle} />
+          <Files folderId={router.query.folder} />
         </div>
       </Layout>
     </div>
