@@ -48,12 +48,16 @@ const RegisterPage = () => {
       },
       body: JSON.stringify({ email, username, userId: user.uid }),
     });
-    setVisible("none");
-    setUsername("");
-    setEmail("");
-    setPassword("");
-    setRepeatPassword("");
-    router.push("/main");
+    if (res.ok) {
+      setVisible("none");
+      setUsername("");
+      setEmail("");
+      setPassword("");
+      setRepeatPassword("");
+      router.push(`/${user.uid}`);
+    } else {
+      return;
+    }
   };
 
   useEffect(() => {

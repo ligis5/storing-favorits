@@ -34,7 +34,7 @@ const Layout = ({ children, title, description }) => {
         />
       </Head>
       <header className="header">
-        <Link href="/main">
+        <Link href={`/${user.uid}`}>
           <a>
             <Image width="50%" height="50%" alt="folder" src={folderIcon} />
           </a>
@@ -49,7 +49,22 @@ const Layout = ({ children, title, description }) => {
             </Link>
           </div>
         ) : (
-          <div>
+          <div
+            style={{
+              display: "flex",
+              gap: "3vw",
+              fontSize: "calc(60% + 0.5vw)",
+            }}
+          >
+            {router.pathname === "/[userId]/folders" ? (
+              <Link href={`/${user.uid}`}>
+                <h3 style={{ cursor: "pointer" }}>Home</h3>
+              </Link>
+            ) : (
+              <Link href={`/${user.uid}/folders`}>
+                <h3 style={{ cursor: "pointer" }}>Folders</h3>
+              </Link>
+            )}
             <Link href="/login">
               <h3 onClick={signOut} style={{ cursor: "pointer" }}>
                 Log Out

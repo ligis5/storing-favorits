@@ -9,7 +9,7 @@ export default async (req, res) => {
       timeCreated: new Date(),
       username,
     };
-    console.log(data, userId);
+
     await db.collection("users").doc(userId).set(data);
     res.json({ data });
   } else {

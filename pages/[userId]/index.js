@@ -7,8 +7,17 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import Folders from "../../components/folders";
 import Layout from "../../components/Layout";
 import styles from "../../styles/Main.module.css";
+import { url } from "../../url";
 
-const MainPage = () => {
+export async function getServerSideProps(context) {
+  const res = await fetch(`${url}/api/${context.query.userId}/folders`);
+  const foldersData = await res.json();
+  return {
+    props: { foldersData },
+  };
+}
+
+const MainPage = ({ foldersData }) => {
   const { folders } = styles;
   return (
     <Layout>
@@ -20,7 +29,7 @@ const MainPage = () => {
           }}
           icon={faCaretSquareLeft}
         />
-        <Folders />
+        <Folders foldersData={foldersData} />
         <FontAwesomeIcon
           icon={faCaretSquareRight}
           style={{

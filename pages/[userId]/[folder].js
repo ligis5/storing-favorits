@@ -8,8 +8,17 @@ import Folders from "../../components/folders";
 import Layout from "../../components/Layout";
 import styles from "../../styles/Main.module.css";
 import { useRouter } from "next/router";
+import { url } from "../../url";
 
-const FolderMainPage = () => {
+export async function getServerSideProps(context) {
+  const res = await fetch(`${url}/api/${context.query.userId}/folders`);
+  const foldersData = await res.json();
+  return {
+    props: { foldersData },
+  };
+}
+
+const FolderMainPage = ({ foldersData }) => {
   const router = useRouter();
 
   const { links, folders } = styles;
@@ -24,7 +33,7 @@ const FolderMainPage = () => {
             }}
             icon={faCaretSquareLeft}
           />
-          <Folders />
+          <Folders foldersData={foldersData} />
           <FontAwesomeIcon
             icon={faCaretSquareRight}
             style={{

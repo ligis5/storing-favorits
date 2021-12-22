@@ -1,6 +1,6 @@
 import styles from "../../styles/Login.module.css";
 import Layout from "../../components/Layout";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useAuth } from "../../components/firebase/authenticate";
 import { useRouter } from "next/router";
 
@@ -12,7 +12,7 @@ const LoginPage = () => {
   const [text, setText] = useState("");
   const [visible, setVisible] = useState("none");
 
-  const { loginUser } = useAuth();
+  const { loginUser, user } = useAuth();
 
   const submitLogin = async (e) => {
     e.preventDefault();
@@ -21,12 +21,17 @@ const LoginPage = () => {
       setVisible("none");
       setEmail("");
       setPassword("");
-      router.push("/main");
     } catch (error) {
       setText("Wrong email or password");
       setVisible("flex");
     }
   };
+
+  useEffect(() => {
+    if (user) {
+      router.push(`/${user.uid}`);
+    }
+  }, [user]);
 
   return (
     <Layout>

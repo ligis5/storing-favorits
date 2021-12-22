@@ -1,15 +1,15 @@
 const { db } = require("../../../../components/firebase/initializeServerSide");
 
 export default async (req, res) => {
-  const files = [];
-  const snapshot = await db
-    .collection("users")
-    .doc(req.query.id)
-    .collection("folders")
-    .doc(req.query.files)
-    .get();
-  files.push(snapshot.data());
   if (req.method === "GET") {
+    const files = [];
+    const snapshot = await db
+      .collection("users")
+      .doc(req.query.userId)
+      .collection("folders")
+      .doc(req.query.files)
+      .get();
+    files.push(snapshot.data());
     res.status(200).json({ files });
   } else {
     res.setHeader("Allow", ["GET"]);

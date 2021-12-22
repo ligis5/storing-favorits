@@ -24,7 +24,7 @@ const Files = ({ folderId }) => {
   };
 
   useEffect(() => {
-    if (user) {
+    if (user && folderId) {
       getFiles();
     }
 
