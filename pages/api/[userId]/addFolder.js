@@ -9,7 +9,7 @@ export default async (req, res) => {
       .doc(req.query.userId)
       .collection("folders")
       .doc(req.body.folder)
-      .set({ exists: true });
+      .set({ status: "empty" });
   } else {
     res.setHeader("Allow", ["POST"]);
     res.status(405).json({ message: `Method ${req.method} is not allowed` });

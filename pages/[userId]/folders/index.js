@@ -10,7 +10,7 @@ export async function getServerSideProps(context) {
     props: { foldersData },
   };
 }
-
+// all the folders page
 const FoldersPage = ({ foldersData }) => {
   const { folders } = styles;
   return (

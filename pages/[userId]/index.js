@@ -17,6 +17,7 @@ export async function getServerSideProps(context) {
   };
 }
 
+// Home page after logging in
 const MainPage = ({ foldersData }) => {
   const { folders } = styles;
   return (

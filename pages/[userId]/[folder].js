@@ -7,20 +7,22 @@ import Files from "../../components/files";
 import Folders from "../../components/folders";
 import Layout from "../../components/Layout";
 import styles from "../../styles/Main.module.css";
-import { useRouter } from "next/router";
 import { url } from "../../url";
 
 export async function getServerSideProps(context) {
-  const res = await fetch(`${url}/api/${context.query.userId}/folders`);
-  const foldersData = await res.json();
+  const resFolders = await fetch(`${url}/api/${context.query.userId}/folders`);
+  const foldersData = await resFolders.json();
+  const resFiles = await fetch(
+    `${url}/api/${context.query.userId}/folders/${context.query.folder}`
+  );
+  const filesData = await resFiles.json();
   return {
-    props: { foldersData },
+    props: { foldersData, filesData },
   };
 }
 
-const FolderMainPage = ({ foldersData }) => {
-  const router = useRouter();
-
+// Main page after logging in after clicing to any of the folders inside main page
+const FolderMainPage = ({ foldersData, filesData }) => {
   const { links, folders } = styles;
   return (
     <div>
@@ -44,7 +46,7 @@ const FolderMainPage = ({ foldersData }) => {
           />
         </div>
         <div className={links}>
-          <Files folderId={router.query.folder} />
+          <Files filesData={filesData} />
         </div>
       </Layout>
     </div>
