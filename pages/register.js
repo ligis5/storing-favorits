@@ -61,7 +61,7 @@ const RegisterPage = () => {
   };
 
   useEffect(() => {
-    if (user.uid && registered) {
+    if (user && registered) {
       sendUserData();
     }
     return () => setRegistered(false);

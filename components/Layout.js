@@ -15,6 +15,9 @@ const Layout = ({ children, title, description }) => {
     if (user) {
       setLoggedIn(true);
     }
+    if (!user) {
+      setLoggedIn(false);
+    }
     return () => {
       setLoggedIn(false);
     };
@@ -34,7 +37,7 @@ const Layout = ({ children, title, description }) => {
         />
       </Head>
       <header className="header">
-        <Link href={`/${user.uid}`}>
+        <Link href={user ? `/${user.uid}` : "/login"}>
           <a>
             <Image width="50%" height="50%" alt="folder" src={folderIcon} />
           </a>

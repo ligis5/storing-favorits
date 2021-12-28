@@ -21,7 +21,7 @@ const Folder = ({ folder }) => {
         style={{
           margin: "0",
           textAlign: "center",
-          color: "black",
+          color: "white",
           fontSize: "calc(50% + 0.5vw)",
         }}
       >

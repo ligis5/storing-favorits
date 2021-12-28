@@ -2,7 +2,7 @@ const { db } = require("../../../components/firebase/initializeServerSide");
 
 export default async (req, res) => {
   if (req.method === "POST") {
-    res.status(200).json(req.body);
+    res.status(200).json(req.body.folder);
 
     await db
       .collection("users")

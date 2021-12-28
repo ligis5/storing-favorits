@@ -8,6 +8,7 @@ body {
   height: 5vh;
   align-items: center;
   padding-right: 10px;
+  color: white;
 }
 
 .login {
@@ -15,4 +16,11 @@ body {
   width: calc(5vw + 15vh);
   max-width: 150px;
   justify-content: space-between;
+}
+.file-options {
+  display: grid;
+  background-color: black;
+  position: absolute;
+  top: 100%;
+  border: 1px solid white;
 }
