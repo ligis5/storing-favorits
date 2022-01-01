@@ -14,7 +14,7 @@ const DataProvider = ({ children }) => {
   const folderName = router.query.folder;
   const { user } = useAuth();
   const [folders, setFolders] = useState();
-  const [files, setFiles] = useState(["empty"]);
+  const [files, setFiles] = useState({});
 
   const fetchFolders = async () => {
     const res = await fetch(`${url}/api/${user.uid}/folders`);
@@ -24,21 +24,26 @@ const DataProvider = ({ children }) => {
     }
   };
   const fetchFiles = async () => {
-    const res = await fetch(`${url}/api/${user.uid}/folders/${folderName}`);
-    const filesData = await res.json();
-    if (res.ok) {
-      setFiles({ ...files, [folderName]: filesData });
+    // if folder was already fetched return true.
+    const ex = files
+      ? Object.keys(files).filter((file) => file === folderName).length > 0
+        ? true
+        : false
+      : false;
+    // fetch only if it was not fetched yet.
+    if (!ex) {
+      const res = await fetch(`${url}/api/${user.uid}/folders/${folderName}`);
+      const filesData = await res.json();
+      if (res.ok) {
+        setFiles({ ...files, [folderName]: filesData });
+      }
     }
   };
 
   useEffect(() => {
     if (user) {
       fetchFiles();
-      console.log(files);
     }
-    return () => {
-      setFiles();
-    };
   }, [folderName, user]);
 
   useEffect(() => {
