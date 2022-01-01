@@ -39,10 +39,9 @@ const AddFile = () => {
         }),
       }
     );
+
     if (!res.ok) {
       console.log(res.statusText);
-    } else {
-      return;
     }
   };
 
@@ -89,7 +88,7 @@ const AddFile = () => {
           <div
             onClick={addingFile}
             style={{
-              position: "absolute",
+              position: "fixed",
               top: "0",
               left: "0",
               right: "0",

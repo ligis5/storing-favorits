@@ -1,8 +1,8 @@
-import { url } from "../url";
-import { useAuth } from "./firebase/authenticate";
+import { url } from "../../url";
+import { useAuth } from "../firebase/authenticate";
 import { useRouter } from "next/router";
 
-const DeleteFile = ({ title }) => {
+const DeleteFile = ({ title, closeOptions }) => {
   const { user } = useAuth();
   const route = useRouter();
 
@@ -19,9 +19,8 @@ const DeleteFile = ({ title }) => {
     );
     if (!res.ok) {
       console.log(res.statusText);
-    } else {
-      return;
     }
+    closeOptions();
   };
 
   return (

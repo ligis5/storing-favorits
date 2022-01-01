@@ -7,22 +7,9 @@ import Files from "../../components/files";
 import Folders from "../../components/folders";
 import Layout from "../../components/Layout";
 import styles from "../../styles/Main.module.css";
-import { url } from "../../url";
-
-export async function getServerSideProps(context) {
-  const resFolders = await fetch(`${url}/api/${context.query.userId}/folders`);
-  const foldersData = await resFolders.json();
-  const resFiles = await fetch(
-    `${url}/api/${context.query.userId}/folders/${context.query.folder}`
-  );
-  const filesData = await resFiles.json();
-  return {
-    props: { foldersData, filesData },
-  };
-}
 
 // Main page after logging in after clicing to any of the folders inside main page
-const FolderMainPage = ({ foldersData, filesData }) => {
+const FolderMainPage = () => {
   const { links, folders } = styles;
   return (
     <div>
@@ -35,7 +22,7 @@ const FolderMainPage = ({ foldersData, filesData }) => {
             }}
             icon={faCaretSquareLeft}
           />
-          <Folders foldersData={foldersData} />
+          <Folders />
           <FontAwesomeIcon
             icon={faCaretSquareRight}
             style={{
@@ -46,7 +33,7 @@ const FolderMainPage = ({ foldersData, filesData }) => {
           />
         </div>
         <div className={links}>
-          <Files filesData={filesData} />
+          <Files />
         </div>
       </Layout>
     </div>

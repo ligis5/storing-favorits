@@ -3,22 +3,12 @@ import {
   faCaretSquareRight,
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-
 import Folders from "../../components/folders";
 import Layout from "../../components/Layout";
 import styles from "../../styles/Main.module.css";
-import { url } from "../../url";
-
-export async function getServerSideProps(context) {
-  const res = await fetch(`${url}/api/${context.query.userId}/folders`);
-  const foldersData = await res.json();
-  return {
-    props: { foldersData },
-  };
-}
 
 // Home page after logging in
-const MainPage = ({ foldersData }) => {
+const MainPage = () => {
   const { folders } = styles;
   return (
     <Layout>
@@ -30,7 +20,7 @@ const MainPage = ({ foldersData }) => {
           }}
           icon={faCaretSquareLeft}
         />
-        <Folders foldersData={foldersData} />
+        <Folders />
         <FontAwesomeIcon
           icon={faCaretSquareRight}
           style={{

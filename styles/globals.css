@@ -1,6 +1,6 @@
 body {
   margin: 0;
-  background: url("../public/background.jpg") no-repeat center center fixed;
+  background-color: rgb(25, 18, 68);
 }
 .header {
   display: flex;
