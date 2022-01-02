@@ -25,6 +25,7 @@ export default async (req, res) => {
         .collection("websites")
         .doc(title)
         .set(doc);
+      res.status(200).json(doc);
     } catch (error) {
       console.log(error);
       res.status(500).json(error);

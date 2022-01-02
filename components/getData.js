@@ -31,7 +31,7 @@ const DataProvider = ({ children }) => {
         : false
       : false;
     // fetch only if it was not fetched yet.
-    if (!ex) {
+    if (!ex && folderName) {
       const res = await fetch(`${url}/api/${user.uid}/folders/${folderName}`);
       const filesData = await res.json();
       if (res.ok) {
@@ -39,13 +39,19 @@ const DataProvider = ({ children }) => {
       }
     }
   };
+  // add file to current files array
+  const addFiles = (f) => {
+    const addedFile = {
+      [folderName]: [...files[folderName], { [f.title]: f }],
+    };
+    return setFiles({ ...files, ...addedFile });
+  };
 
   useEffect(() => {
     if (user) {
       fetchFiles();
     }
   }, [folderName, user]);
-
   useEffect(() => {
     if (user) {
       fetchFolders();
@@ -58,6 +64,7 @@ const DataProvider = ({ children }) => {
   const data = {
     folders,
     files,
+    addFiles,
   };
   return <CreateData.Provider value={data}>{children}</CreateData.Provider>;
 };

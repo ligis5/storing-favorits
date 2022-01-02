@@ -16,18 +16,18 @@ const Files = () => {
       setFolderFiles(files[folderName]);
     }
     return () => setFolderFiles([]);
-  }, [files]);
+  });
 
   return (
     <>
       {folderFiles ? (
-        folderFiles.map((file) => {
-          const name = Object.keys(file);
+        Object.values(folderFiles).map((file) => {
+          const fileVal = Object.values(file);
           return (
             <File
-              file={file[name].url}
-              key={file[name].url}
-              name={file[name].title}
+              file={fileVal[0].url}
+              key={fileVal[0].url}
+              name={fileVal[0].title}
             />
           );
         })

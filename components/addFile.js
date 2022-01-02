@@ -4,6 +4,7 @@ import { useRouter } from "next/router";
 import { useState, useEffect } from "react";
 import { url } from "../url";
 import { useAuth } from "./firebase/authenticate";
+import { useData } from "./getData";
 
 const style = {
   fontSize: "25px",
@@ -12,6 +13,7 @@ const style = {
 };
 
 const AddFile = () => {
+  const { addFiles } = useData();
   const route = useRouter();
   const { user } = useAuth();
   const [adding, setAdding] = useState(false);
@@ -39,7 +41,11 @@ const AddFile = () => {
         }),
       }
     );
-
+    if (res.ok) {
+      const content = await res.json();
+      addFiles(content);
+      setNewFile("");
+    }
     if (!res.ok) {
       console.log(res.statusText);
     }
