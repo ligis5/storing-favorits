@@ -12,7 +12,7 @@ const style = {
   justifySelf: "center",
 };
 
-const AddFile = () => {
+const AddFile = ({ currentFolder }) => {
   const { addFiles } = useData();
   const route = useRouter();
   const { user } = useAuth();
@@ -28,7 +28,7 @@ const AddFile = () => {
     setAdding(adding ? closeInput : true);
   };
   // send data to backend
-  const sendFile = async (data) => {
+  const sendFile = async (data, id) => {
     const res = await fetch(
       `${url}/api/${user.uid}/folders/${route.query.folder}/addFile`,
       {
@@ -38,6 +38,7 @@ const AddFile = () => {
         },
         body: JSON.stringify({
           file: data,
+          id: id,
         }),
       }
     );
@@ -55,8 +56,9 @@ const AddFile = () => {
   const submitFile = (e) => {
     e.preventDefault();
     if (newFile.length > 0) {
-      sendFile(newFile);
+      sendFile(newFile, currentFolder[0].id);
       setAdding(false);
+      setNewFile("");
     }
   };
 

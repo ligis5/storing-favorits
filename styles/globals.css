@@ -17,7 +17,7 @@ body {
   max-width: 150px;
   justify-content: space-between;
 }
-.file-options {
+.options {
   display: grid;
   background-color: black;
   position: absolute;

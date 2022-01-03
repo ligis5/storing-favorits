@@ -6,8 +6,12 @@ export default async (req, res) => {
       .collection("users")
       .doc(req.query.userId)
       .collection("folders")
-      .listDocuments();
-    const folders = snapshot.map((folder) => folder.id);
+      .get();
+
+    let folders = [];
+    snapshot.forEach((folder) => {
+      folders.push(folder.data());
+    });
     res.status(200).json({ folders });
   } else {
     res.setHeader("Allow", ["GET"]);

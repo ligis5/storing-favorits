@@ -3,7 +3,7 @@ import { url } from "../../url";
 import { useAuth } from "../firebase/authenticate";
 import { useRouter } from "next/router";
 
-const RenameFile = ({ changeTitle }) => {
+const Rename = ({ changeTitle }) => {
   return (
     <div onClick={changeTitle} style={{ cursor: "pointer" }}>
       <h6 style={{ color: "white", margin: "5px" }}>rename</h6>
@@ -11,4 +11,4 @@ const RenameFile = ({ changeTitle }) => {
   );
 };
 
-export default RenameFile;
+export default Rename;

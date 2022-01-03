@@ -1,7 +1,7 @@
 import { faFileImage, faEllipsisH } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useState, useEffect } from "react";
-import FileOptions from "./file-options/fileOptions";
+import Options from "./options/options";
 import Image from "next/image";
 import { url } from "../url";
 import { useAuth } from "./firebase/authenticate";
@@ -179,10 +179,11 @@ const File = ({ file, name }) => {
               bottom: "0",
             }}
           ></div>
-          <FileOptions
+          <Options
             title={name}
             closeOptions={() => setOpenOptions(false)}
             changeTitle={changeTitle}
+            path={`${url}/api/${user.uid}/folders/${route.query.folder}/deleteFile`}
           />
         </>
       )}

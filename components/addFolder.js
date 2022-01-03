@@ -1,9 +1,10 @@
-import { faFolderPlus } from "@fortawesome/free-solid-svg-icons";
+import { faFolderPlus, faEllipsisH } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useRouter } from "next/router";
 import { useState, useEffect } from "react";
 import { url } from "../url";
 import { useAuth } from "./firebase/authenticate";
+import { useData } from "./getData";
 
 const style = {
   fontSize: "calc(2vh + 2vw)",
@@ -13,6 +14,7 @@ const style = {
 };
 
 const AddFolder = () => {
+  const { addFolder } = useData();
   const route = useRouter();
   const { user } = useAuth();
   const [adding, setAdding] = useState(false);
@@ -37,10 +39,13 @@ const AddFolder = () => {
         folder: data,
       }),
     });
+    if (res.ok) {
+      const content = await res.json();
+      addFolder(content);
+      setNewFolder("");
+    }
     if (!res.ok) {
       console.log(res.status);
-    } else {
-      return;
     }
   };
 
@@ -109,6 +114,14 @@ const AddFolder = () => {
           </form>
         </>
       )}
+      <FontAwesomeIcon
+        style={{
+          fontSize: "20px",
+          visibility: "hidden",
+          justifySelf: "center",
+        }}
+        icon={faEllipsisH}
+      />
     </div>
   );
 };

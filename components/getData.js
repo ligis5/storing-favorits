@@ -13,14 +13,15 @@ const DataProvider = ({ children }) => {
   const router = useRouter();
   const folderName = router.query.folder;
   const { user } = useAuth();
-  const [folders, setFolders] = useState();
+  const [folders, setFolders] = useState([]);
   const [files, setFiles] = useState({});
+  const [currentFolder, setCurrentFolder] = useState();
 
   const fetchFolders = async () => {
     const res = await fetch(`${url}/api/${user.uid}/folders`);
     const foldersRes = await res.json();
     if (res.ok) {
-      setFolders(foldersRes);
+      setFolders(foldersRes.folders);
     }
   };
   const fetchFiles = async () => {
@@ -32,12 +33,20 @@ const DataProvider = ({ children }) => {
       : false;
     // fetch only if it was not fetched yet.
     if (!ex && folderName) {
-      const res = await fetch(`${url}/api/${user.uid}/folders/${folderName}`);
+      const currentFolderId = currentFolder ? currentFolder[0].id : null;
+      const res = await fetch(
+        `${url}/api/${user.uid}/folders/${currentFolderId}`
+      );
       const filesData = await res.json();
       if (res.ok) {
         setFiles({ ...files, [folderName]: filesData });
       }
     }
+  };
+
+  // add fodler to current folders array
+  const addFolder = (f) => {
+    return setFolders([...folders, f]);
   };
   // add file to current files array
   const addFiles = (f) => {
@@ -47,11 +56,44 @@ const DataProvider = ({ children }) => {
     return setFiles({ ...files, ...addedFile });
   };
 
+  const renameFolder = (id, newName) => {
+    if (folders) {
+      const f = folders.map((folder) => {
+        if (folder.id === id) {
+          folder.name = newName;
+        }
+        return folder;
+      });
+      setFolders(f);
+    }
+  };
+
+  const whatFolderIamIn = () => {
+    const folder = folders
+      ? folders.filter((f) => f.name === folderName)
+      : null;
+    setCurrentFolder(folder);
+  };
+
+  const deleteFolder = async (f) => {
+    const filteredFolders = folders
+      ? folders.filter((folder) => folder.name != f)
+      : null;
+    setFolders(filteredFolders);
+  };
+
   useEffect(() => {
-    if (user) {
+    if (user && folders) {
+      whatFolderIamIn();
+    }
+  }, [folderName, folders]);
+
+  useEffect(() => {
+    if (user && currentFolder) {
       fetchFiles();
     }
-  }, [folderName, user]);
+  }, [currentFolder, user]);
+
   useEffect(() => {
     if (user) {
       fetchFolders();
@@ -65,6 +107,10 @@ const DataProvider = ({ children }) => {
     folders,
     files,
     addFiles,
+    addFolder,
+    renameFolder,
+    currentFolder,
+    deleteFolder,
   };
   return <CreateData.Provider value={data}>{children}</CreateData.Provider>;
 };

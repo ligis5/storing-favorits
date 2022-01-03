@@ -21,9 +21,9 @@ export default async (req, res) => {
         .collection("users")
         .doc(req.query.userId)
         .collection("folders")
-        .doc(req.query.folder)
+        .doc(req.body.id)
         .collection("websites")
-        .doc(title)
+        .doc(doc.title)
         .set(doc);
       res.status(200).json(doc);
     } catch (error) {

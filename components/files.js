@@ -8,7 +8,7 @@ import { useEffect, useState } from "react";
 const Files = () => {
   const router = useRouter();
   const folderName = router.query.folder;
-  const { files } = useData();
+  const { files, currentFolder } = useData();
   const [folderFiles, setFolderFiles] = useState([]);
 
   useEffect(() => {
@@ -34,7 +34,7 @@ const Files = () => {
       ) : (
         <></>
       )}
-      <AddFile />
+      <AddFile currentFolder={currentFolder} />
     </>
   );
 };
