@@ -17,6 +17,7 @@ export const useAuth = () => {
 
 const AuthenticationProvider = ({ children }) => {
   const [user, setUser] = useState("");
+  const [token, setToken] = useState("");
 
   const registerUser = (email, password) => {
     return createUserWithEmailAndPassword(auth, email, password);
@@ -42,9 +43,28 @@ const AuthenticationProvider = ({ children }) => {
   // check if user is already logged in
   const checkUser = () => {
     onAuthStateChanged(auth, (user) => {
-      setUser(user);
+      if (user) {
+        setUser(user);
+      } else setUser(null);
     });
   };
+
+  const getUserToken = () => {
+    user
+      .getIdToken(/* forceRefresh */ true)
+      .then(function (idToken) {
+        setToken(idToken);
+      })
+      .catch(function (error) {
+        console.log(error);
+      });
+  };
+
+  useEffect(() => {
+    if (user) {
+      getUserToken();
+    }
+  }, [user]);
 
   useEffect(() => {
     checkUser();
@@ -59,6 +79,7 @@ const AuthenticationProvider = ({ children }) => {
     loginUser,
     forgotPassword,
     logOut,
+    token,
   };
 
   return <AuthContext.Provider value={data}>{children}</AuthContext.Provider>;

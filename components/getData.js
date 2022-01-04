@@ -12,18 +12,31 @@ export const useData = () => {
 const DataProvider = ({ children }) => {
   const router = useRouter();
   const folderName = router.query.folder;
-  const { user } = useAuth();
+  const { user, token } = useAuth();
   const [folders, setFolders] = useState([]);
   const [files, setFiles] = useState({});
   const [currentFolder, setCurrentFolder] = useState();
 
   const fetchFolders = async () => {
-    const res = await fetch(`${url}/api/${user.uid}/folders`);
-    const foldersRes = await res.json();
-    if (res.ok) {
-      setFolders(foldersRes.folders);
+    try {
+      const res = await fetch(`${url}/api/${user.uid}/folders`, {
+        method: "GET",
+        withCredentials: true,
+        credentials: "include",
+        headers: {
+          Authorization: `Bearer ${token}`,
+          "Content-Type": "application/json",
+        },
+      });
+      const foldersRes = await res.json();
+      if (res.ok) {
+        setFolders(foldersRes.folders);
+      }
+    } catch (err) {
+      console.log(err);
     }
   };
+
   const fetchFiles = async () => {
     // if folder was already fetched return true.
     const ex = files
@@ -83,25 +96,25 @@ const DataProvider = ({ children }) => {
   };
 
   useEffect(() => {
-    if (user && folders) {
+    if (token && folders) {
       whatFolderIamIn();
     }
   }, [folderName, folders]);
 
   useEffect(() => {
-    if (user && currentFolder) {
+    if (token && currentFolder) {
       fetchFiles();
     }
-  }, [currentFolder, user]);
+  }, [currentFolder, token]);
 
   useEffect(() => {
-    if (user) {
+    if (token) {
       fetchFolders();
     }
     return () => {
       setFolders();
     };
-  }, [user]);
+  }, [token]);
 
   const data = {
     folders,
