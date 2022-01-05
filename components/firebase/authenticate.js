@@ -16,7 +16,6 @@ export const useAuth = () => {
 };
 
 const AuthenticationProvider = ({ children }) => {
-  const [user, setUser] = useState("");
   const [token, setToken] = useState("");
 
   const registerUser = (email, password) => {
@@ -44,37 +43,28 @@ const AuthenticationProvider = ({ children }) => {
   const checkUser = () => {
     onAuthStateChanged(auth, (user) => {
       if (user) {
-        setUser(user);
-      } else setUser(null);
+        user
+          .getIdToken(/* forceRefresh */ true)
+          .then(function (idToken) {
+            setToken(idToken);
+          })
+          .catch(function (error) {
+            console.log(error);
+          });
+      } else setToken(null);
     });
   };
 
-  const getUserToken = () => {
-    user
-      .getIdToken(/* forceRefresh */ true)
-      .then(function (idToken) {
-        setToken(idToken);
-      })
-      .catch(function (error) {
-        console.log(error);
-      });
-  };
-
-  useEffect(() => {
-    if (user) {
-      getUserToken();
-    }
-  }, [user]);
+  const getUserToken = () => {};
 
   useEffect(() => {
     checkUser();
     return () => {
-      setUser("");
+      setToken(null);
     };
   }, []);
 
   const data = {
-    user,
     registerUser,
     loginUser,
     forgotPassword,

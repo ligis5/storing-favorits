@@ -5,11 +5,13 @@ import Options from "./options/options";
 import Image from "next/image";
 import { url } from "../url";
 import { useAuth } from "./firebase/authenticate";
+import { useData } from "./getData";
 import { useRouter } from "next/router";
 
 // single file
-const File = ({ file, name }) => {
-  const { user } = useAuth();
+const File = ({ file, name, id }) => {
+  const { token } = useAuth();
+  const { currentFolder } = useData();
   const route = useRouter();
   const [image, setImage] = useState();
   const [openOptions, setOpenOptions] = useState(false);
@@ -38,9 +40,12 @@ const File = ({ file, name }) => {
 
   const sendNewTitle = async (oldTitle, newTitle) => {
     const res = await fetch(
-      `${url}/api/${user.uid}/folders/${route.query.folder}/renameFile`,
+      `${url}/api/user/folders/${currentFolder.id}/renameFile`,
       {
+        withCredentials: true,
+        credentials: "include",
         headers: {
+          Authorization: `Bearer ${token}`,
           "Content-Type": "application/json",
         },
         method: "PUT",
@@ -70,6 +75,7 @@ const File = ({ file, name }) => {
   const submitTitle = (e) => {
     e.preventDefault();
     sendNewTitle(name, newTitleValue);
+    setNewTitleValue("");
   };
 
   return (
@@ -180,10 +186,10 @@ const File = ({ file, name }) => {
             }}
           ></div>
           <Options
-            title={name}
+            title={id}
             closeOptions={() => setOpenOptions(false)}
             changeTitle={changeTitle}
-            path={`${url}/api/${user.uid}/folders/${route.query.folder}/deleteFile`}
+            path={`${url}/api/user/folders/${currentFolder.id}/deleteFile`}
           />
         </>
       )}

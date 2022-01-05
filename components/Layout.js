@@ -5,10 +5,12 @@ import Link from "next/link";
 import { useAuth } from "./firebase/authenticate";
 import { useEffect, useState } from "react";
 import { useRouter } from "next/router";
+import { useData } from "./getData";
 
 const Layout = ({ children, title, description }) => {
   const router = useRouter();
-  const { user, logOut } = useAuth();
+  const { logOut } = useAuth();
+  const { user, currentFolder } = useData();
   const [loggedIn, setLoggedIn] = useState(false);
 
   useEffect(() => {
@@ -22,6 +24,7 @@ const Layout = ({ children, title, description }) => {
       setLoggedIn(false);
     };
   }, [user]);
+
   const signOut = async () => {
     await logOut();
     router.push("/login");
@@ -37,7 +40,7 @@ const Layout = ({ children, title, description }) => {
         />
       </Head>
       <header className="header">
-        <Link href={user ? `/${user.uid}` : "/login"}>
+        <Link href={user ? `/${user.username}` : "/login"}>
           <a>
             <Image width="50%" height="50%" alt="folder" src={folderIcon} />
           </a>
@@ -59,12 +62,12 @@ const Layout = ({ children, title, description }) => {
               fontSize: "calc(60% + 0.5vw)",
             }}
           >
-            {router.pathname === "/[userId]/folders" ? (
-              <Link href={`/${user.uid}`}>
+            {router.pathname === "/[username]/folders" ? (
+              <Link href={user ? `/${user.username}` : "/"}>
                 <h3 style={{ cursor: "pointer" }}>Home</h3>
               </Link>
             ) : (
-              <Link href={`/${user.uid}/folders`}>
+              <Link href={user ? `/${user.username}/folders` : "/"}>
                 <h3 style={{ cursor: "pointer" }}>Folders</h3>
               </Link>
             )}

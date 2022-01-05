@@ -12,28 +12,46 @@ export const useData = () => {
 const DataProvider = ({ children }) => {
   const router = useRouter();
   const folderName = router.query.folder;
-  const { user, token } = useAuth();
+  const { token } = useAuth();
+  const [user, setUser] = useState();
   const [folders, setFolders] = useState([]);
   const [files, setFiles] = useState({});
   const [currentFolder, setCurrentFolder] = useState();
+  const getUser = async () => {
+    const res = await fetch(`${url}/api/user`, {
+      method: "GET",
+      withCredentials: true,
+      credentials: "include",
+      headers: {
+        Authorization: `Bearer ${token}`,
+        "Content-Type": "application/json",
+      },
+    });
+    if (res.ok) {
+      const userRes = await res.json();
+      setUser(userRes);
+    } else {
+      console.log(res.status);
+      setUser(null);
+      router.push("/login");
+    }
+  };
 
   const fetchFolders = async () => {
-    try {
-      const res = await fetch(`${url}/api/${user.uid}/folders`, {
-        method: "GET",
-        withCredentials: true,
-        credentials: "include",
-        headers: {
-          Authorization: `Bearer ${token}`,
-          "Content-Type": "application/json",
-        },
-      });
-      const foldersRes = await res.json();
-      if (res.ok) {
-        setFolders(foldersRes.folders);
-      }
-    } catch (err) {
-      console.log(err);
+    const res = await fetch(`${url}/api/user/folders`, {
+      method: "GET",
+      withCredentials: true,
+      credentials: "include",
+      headers: {
+        Authorization: `Bearer ${token}`,
+        "Content-Type": "application/json",
+      },
+    });
+    const foldersRes = await res.json();
+    if (res.ok) {
+      setFolders(foldersRes.folders);
+    } else {
+      console.log(res.status);
     }
   };
 
@@ -46,10 +64,16 @@ const DataProvider = ({ children }) => {
       : false;
     // fetch only if it was not fetched yet.
     if (!ex && folderName) {
-      const currentFolderId = currentFolder ? currentFolder[0].id : null;
-      const res = await fetch(
-        `${url}/api/${user.uid}/folders/${currentFolderId}`
-      );
+      const currentFolderId = currentFolder ? currentFolder.id : null;
+      const res = await fetch(`${url}/api/user/folders/${currentFolderId}`, {
+        method: "GET",
+        withCredentials: true,
+        credentials: "include",
+        headers: {
+          Authorization: `Bearer ${token}`,
+          "Content-Type": "application/json",
+        },
+      });
       const filesData = await res.json();
       if (res.ok) {
         setFiles({ ...files, [folderName]: filesData });
@@ -85,7 +109,7 @@ const DataProvider = ({ children }) => {
     const folder = folders
       ? folders.filter((f) => f.name === folderName)
       : null;
-    setCurrentFolder(folder);
+    setCurrentFolder(folder[0]);
   };
 
   const deleteFolder = async (f) => {
@@ -110,6 +134,7 @@ const DataProvider = ({ children }) => {
   useEffect(() => {
     if (token) {
       fetchFolders();
+      getUser();
     }
     return () => {
       setFolders();
@@ -118,6 +143,7 @@ const DataProvider = ({ children }) => {
 
   const data = {
     folders,
+    user,
     files,
     addFiles,
     addFolder,

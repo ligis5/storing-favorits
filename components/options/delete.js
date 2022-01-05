@@ -1,12 +1,17 @@
 import { useRouter } from "next/router";
 import { useData } from "../getData";
+import { useAuth } from "../firebase/authenticate";
 const Delete = ({ title, closeOptions, path, id }) => {
   const router = useRouter();
   const { deleteFolder } = useData();
+  const { token } = useAuth();
 
   const sendDelete = async () => {
     const res = await fetch(path, {
+      withCredentials: true,
+      credentials: "include",
       headers: {
+        Authorization: `Bearer ${token}`,
         "Content-Type": "application/json",
       },
       method: "DELETE",

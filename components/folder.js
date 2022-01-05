@@ -8,15 +8,13 @@ import { useRouter } from "next/router";
 import Options from "./options/options";
 import { useState } from "react";
 import Link from "next/link";
-import { useAuth } from "./firebase/authenticate";
 import { useData } from "./getData";
 import { url } from "../url";
 
 // single styled folder
 const Folder = ({ folder, id }) => {
   const router = useRouter();
-  const { user } = useAuth();
-  const { renameFolder } = useData();
+  const { renameFolder, user } = useData();
   const [openOptions, setOpenOptions] = useState(false);
   const [newTitle, setNewTitle] = useState(false);
   const [newTitleValue, setNewTitleValue] = useState("");
@@ -34,8 +32,11 @@ const Folder = ({ folder, id }) => {
 
   // Send folders id and new title
   const sendNewTitle = async (id, newTitle) => {
-    const res = await fetch(`${url}/api/${user.uid}/folders/renameFolder`, {
+    const res = await fetch(`${url}/api/user/folders/renameFolder`, {
+      withCredentials: true,
+      credentials: "include",
       headers: {
+        Authorization: `Bearer ${token}`,
         "Content-Type": "application/json",
       },
       method: "PUT",
@@ -71,9 +72,9 @@ const Folder = ({ folder, id }) => {
       <Link
         key={folder}
         href={
-          router.pathname === "/[userId]/folders"
-            ? `/${user.uid}/folders/${folder}`
-            : `/${user.uid}/${folder}`
+          router.pathname === "/[username]/folders"
+            ? `/${user ? user.username : "folder"}/folders/${folder}`
+            : `/${user ? user.username : "folder"}/${folder}`
         }
       >
         <a
@@ -166,7 +167,7 @@ const Folder = ({ folder, id }) => {
             closeOptions={() => setOpenOptions(false)}
             changeTitle={changeTitle}
             id={id}
-            path={`${url}/api/${user.uid}/folders/deleteFolder`}
+            path={`${url}/api/user/folders/deleteFolder`}
           />
         </>
       )}

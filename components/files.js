@@ -25,6 +25,7 @@ const Files = () => {
           const fileVal = Object.values(file);
           return (
             <File
+              id={fileVal[0].id}
               file={fileVal[0].url}
               key={fileVal[0].url}
               name={fileVal[0].title}

@@ -1,8 +1,3 @@
-import { useEffect } from "react";
-import { url } from "../../url";
-import { useAuth } from "../firebase/authenticate";
-import { useRouter } from "next/router";
-
 const Rename = ({ changeTitle }) => {
   return (
     <div onClick={changeTitle} style={{ cursor: "pointer" }}>

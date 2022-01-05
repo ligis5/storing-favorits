@@ -9,14 +9,5 @@ export const checkToken = (req, res) => {
   } else {
     req.authToken = null;
   }
-  let uid;
-  getAuth()
-    .verifyIdToken(req.authToken)
-    .then((decodedToken) => {
-      uid = decodedToken.uid;
-    })
-    .catch((error) => {
-      console.log(error);
-    });
-  return uid;
+  return getAuth().verifyIdToken(req.authToken);
 };

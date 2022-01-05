@@ -13,9 +13,9 @@ const style = {
 };
 
 const AddFile = ({ currentFolder }) => {
-  const { addFiles } = useData();
+  const { addFiles, user } = useData();
   const route = useRouter();
-  const { user } = useAuth();
+  const { token } = useAuth();
   const [adding, setAdding] = useState(false);
   const [newFile, setNewFile] = useState("");
 
@@ -30,10 +30,13 @@ const AddFile = ({ currentFolder }) => {
   // send data to backend
   const sendFile = async (data, id) => {
     const res = await fetch(
-      `${url}/api/${user.uid}/folders/${route.query.folder}/addFile`,
+      `${url}/api/user/folders/${route.query.folder}/addFile`,
       {
         method: "POST",
+        withCredentials: true,
+        credentials: "include",
         headers: {
+          Authorization: `Bearer ${token}`,
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
@@ -56,7 +59,7 @@ const AddFile = ({ currentFolder }) => {
   const submitFile = (e) => {
     e.preventDefault();
     if (newFile.length > 0) {
-      sendFile(newFile, currentFolder[0].id);
+      sendFile(newFile, currentFolder.id);
       setAdding(false);
       setNewFile("");
     }
