@@ -3,27 +3,13 @@ import folderIcon from "../public/icons/folder-icon.png";
 import Image from "next/image";
 import Link from "next/link";
 import { useAuth } from "./firebase/authenticate";
-import { useEffect, useState } from "react";
 import { useRouter } from "next/router";
 import { useData } from "./getData";
 
 const Layout = ({ children, title, description }) => {
   const router = useRouter();
-  const { logOut } = useAuth();
-  const { user, currentFolder } = useData();
-  const [loggedIn, setLoggedIn] = useState(false);
-
-  useEffect(() => {
-    if (user) {
-      setLoggedIn(true);
-    }
-    if (!user) {
-      setLoggedIn(false);
-    }
-    return () => {
-      setLoggedIn(false);
-    };
-  }, [user]);
+  const { logOut, loggedIn } = useAuth();
+  const { user } = useData();
 
   const signOut = async () => {
     await logOut();

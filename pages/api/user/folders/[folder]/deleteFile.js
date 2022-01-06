@@ -1,23 +1,19 @@
 const {
   db,
 } = require("../../../../../components/firebase/initializeServerSide");
-const {
-  checkToken,
-} = require("../../../../../components/firebase/authenticateServerSide");
 
 export default async (req, res) => {
   if (req.method === "DELETE") {
-    try {
-      const userToken = await checkToken(req, res);
-      const userId = userToken.uid;
+    const userIdCookie = req.cookies.token;
+    const userIdToken = req.headers.authorization.split(" ")[1];
 
-      const title = req.body;
-
-      // delete field in firestore.
+    if (userIdCookie === userIdToken) {
       try {
+        const title = req.body;
+        // delete field in firestore.
         await db
           .collection("users")
-          .doc(userId)
+          .doc(userIdCookie)
           .collection("folders")
           .doc(req.query.folder)
           .collection("websites")
@@ -27,9 +23,9 @@ export default async (req, res) => {
           status: "OK",
         });
       } catch (error) {
-        console.log(error);
+        res.status(404).json({ message: "Data not found" });
       }
-    } catch (error) {
+    } else {
       res.status(403).json({ message: "No access" });
     }
   } else {

@@ -8,6 +8,7 @@ import {
   onAuthStateChanged,
 } from "firebase/auth";
 import { auth } from "./initialize";
+import { url } from "../../url";
 
 const AuthContext = createContext();
 
@@ -16,7 +17,8 @@ export const useAuth = () => {
 };
 
 const AuthenticationProvider = ({ children }) => {
-  const [token, setToken] = useState("");
+  const [loggedIn, setLoggedIn] = useState(false);
+  const [user, setUser] = useState(null);
 
   const registerUser = (email, password) => {
     return createUserWithEmailAndPassword(auth, email, password);
@@ -29,38 +31,61 @@ const AuthenticationProvider = ({ children }) => {
     return sendPasswordResetEmail(auth, email);
   };
 
-  const logOut = () => {
-    return signOut(auth)
-      .then(() => {
-        setUser("");
-      })
-      .catch((error) => {
-        console.log(error);
+  const logOut = async () => {
+    try {
+      await signOut(auth);
+      setLoggedIn(false);
+      setUser(null);
+      await fetch(`${url}/api/logout`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
       });
+    } catch (err) {
+      console.log(err);
+    }
   };
 
-  // check if user is already logged in
-  const checkUser = () => {
-    onAuthStateChanged(auth, (user) => {
+  // If user logged in on front end send token to back end.
+  const checkUser = async () => {
+    onAuthStateChanged(auth, async (user) => {
       if (user) {
-        user
-          .getIdToken(/* forceRefresh */ true)
-          .then(function (idToken) {
-            setToken(idToken);
-          })
-          .catch(function (error) {
-            console.log(error);
+        setUser(user);
+        try {
+          const idToken = await user.getIdToken(/* forceRefresh */ true);
+          const res = await fetch(`${url}/api/login`, {
+            method: "POST",
+            withCredentials: true,
+            credentials: "include",
+            headers: {
+              Authorization: `Bearer ${idToken}`,
+              "Content-Type": "application/json",
+            },
           });
-      } else setToken(null);
+          if (res.ok) {
+            const data = await res.json();
+            setLoggedIn(data.success);
+            console.log();
+          } else {
+            console.log(res.status);
+            setLoggedIn(false);
+            setUser(null);
+          }
+        } catch (err) {
+          console.log(err);
+        }
+      } else {
+        return;
+      }
     });
   };
-
-  const getUserToken = () => {};
 
   useEffect(() => {
     checkUser();
     return () => {
-      setToken(null);
+      setLoggedIn(false);
+      setUser(null);
     };
   }, []);
 
@@ -69,7 +94,8 @@ const AuthenticationProvider = ({ children }) => {
     loginUser,
     forgotPassword,
     logOut,
-    token,
+    loggedIn,
+    user,
   };
 
   return <AuthContext.Provider value={data}>{children}</AuthContext.Provider>;

@@ -13,9 +13,9 @@ const style = {
 };
 
 const AddFile = ({ currentFolder }) => {
-  const { addFiles, user } = useData();
+  const { addFiles } = useData();
   const route = useRouter();
-  const { token } = useAuth();
+  const { user } = useAuth();
   const [adding, setAdding] = useState(false);
   const [newFile, setNewFile] = useState("");
 
@@ -36,7 +36,7 @@ const AddFile = ({ currentFolder }) => {
         withCredentials: true,
         credentials: "include",
         headers: {
-          Authorization: `Bearer ${token}`,
+          Authorization: `Bearer ${user.uid}`,
           "Content-Type": "application/json",
         },
         body: JSON.stringify({

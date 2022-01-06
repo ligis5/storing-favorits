@@ -1,23 +1,26 @@
 const { db } = require("../../../../components/firebase/initializeServerSide");
-import { checkToken } from "../../../../components/firebase/authenticateServerSide";
 
 export default async (req, res) => {
   if (req.method === "GET") {
-    try {
-      const userToken = await checkToken(req, res);
-      const userId = userToken.uid;
-      const snapshot = await db
-        .collection("users")
-        .doc(userId)
-        .collection("folders")
-        .get();
+    const userIdCookie = req.cookies.token;
+    const userIdToken = req.headers.authorization.split(" ")[1];
+    if (userIdCookie === userIdToken) {
+      try {
+        const snapshot = await db
+          .collection("users")
+          .doc(userIdCookie)
+          .collection("folders")
+          .get();
 
-      let folders = [];
-      snapshot.forEach((folder) => {
-        folders.push(folder.data());
-      });
-      res.status(200).json({ folders });
-    } catch (error) {
+        let folders = [];
+        snapshot.forEach((folder) => {
+          folders.push(folder.data());
+        });
+        res.status(200).json({ folders });
+      } catch (error) {
+        res.status(404).json({ message: "Data not found" });
+      }
+    } else {
       res.status(403).json({ message: "No access" });
     }
   } else {

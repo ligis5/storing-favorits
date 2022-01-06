@@ -30,12 +30,11 @@ const AddFolder = () => {
   };
   // send data to backend
   const sendFolder = async (data) => {
-    const res = await fetch(`${url}/api/${user.uid}/addFolder`, {
-      method: "POST",
+    const res = await fetch(`${url}/api/user/addFolder`, {
       withCredentials: true,
       credentials: "include",
       headers: {
-        Authorization: `Bearer ${token}`,
+        Authorization: `Bearer ${user.uid}`,
         "Content-Type": "application/json",
       },
       body: JSON.stringify({

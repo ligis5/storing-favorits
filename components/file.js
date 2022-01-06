@@ -10,7 +10,7 @@ import { useRouter } from "next/router";
 
 // single file
 const File = ({ file, name, id }) => {
-  const { token } = useAuth();
+  const { user } = useAuth();
   const { currentFolder } = useData();
   const route = useRouter();
   const [image, setImage] = useState();
@@ -45,7 +45,7 @@ const File = ({ file, name, id }) => {
         withCredentials: true,
         credentials: "include",
         headers: {
-          Authorization: `Bearer ${token}`,
+          Authorization: `Bearer ${user.uid}`,
           "Content-Type": "application/json",
         },
         method: "PUT",

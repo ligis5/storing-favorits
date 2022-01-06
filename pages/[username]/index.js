@@ -7,9 +7,14 @@ import Folders from "../../components/folders";
 import Layout from "../../components/Layout";
 import styles from "../../styles/Main.module.css";
 
+export const getServerSideProps = async ({ req, res }) => {
+  return { props: { token: req.cookies.token || "" } };
+};
+
 // Home page after logging in
-const MainPage = () => {
+const MainPage = ({ token }) => {
   const { folders } = styles;
+
   return (
     <Layout>
       <div className={folders}>

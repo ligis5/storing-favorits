@@ -12,30 +12,10 @@ export const useData = () => {
 const DataProvider = ({ children }) => {
   const router = useRouter();
   const folderName = router.query.folder;
-  const { token } = useAuth();
-  const [user, setUser] = useState();
+  const { user } = useAuth();
   const [folders, setFolders] = useState([]);
   const [files, setFiles] = useState({});
   const [currentFolder, setCurrentFolder] = useState();
-  const getUser = async () => {
-    const res = await fetch(`${url}/api/user`, {
-      method: "GET",
-      withCredentials: true,
-      credentials: "include",
-      headers: {
-        Authorization: `Bearer ${token}`,
-        "Content-Type": "application/json",
-      },
-    });
-    if (res.ok) {
-      const userRes = await res.json();
-      setUser(userRes);
-    } else {
-      console.log(res.status);
-      setUser(null);
-      router.push("/login");
-    }
-  };
 
   const fetchFolders = async () => {
     const res = await fetch(`${url}/api/user/folders`, {
@@ -43,7 +23,7 @@ const DataProvider = ({ children }) => {
       withCredentials: true,
       credentials: "include",
       headers: {
-        Authorization: `Bearer ${token}`,
+        Authorization: `Bearer ${user.uid}`,
         "Content-Type": "application/json",
       },
     });
@@ -70,7 +50,7 @@ const DataProvider = ({ children }) => {
         withCredentials: true,
         credentials: "include",
         headers: {
-          Authorization: `Bearer ${token}`,
+          Authorization: `Bearer ${user.uid}`,
           "Content-Type": "application/json",
         },
       });
@@ -120,30 +100,28 @@ const DataProvider = ({ children }) => {
   };
 
   useEffect(() => {
-    if (token && folders) {
+    if (user && folders) {
       whatFolderIamIn();
     }
   }, [folderName, folders]);
 
   useEffect(() => {
-    if (token && currentFolder) {
+    if (user && currentFolder) {
       fetchFiles();
     }
-  }, [currentFolder, token]);
+  }, [currentFolder, user]);
 
   useEffect(() => {
-    if (token) {
+    if (user) {
       fetchFolders();
-      getUser();
     }
     return () => {
       setFolders();
     };
-  }, [token]);
+  }, [user]);
 
   const data = {
     folders,
-    user,
     files,
     addFiles,
     addFolder,

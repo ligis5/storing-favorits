@@ -9,12 +9,14 @@ import Options from "./options/options";
 import { useState } from "react";
 import Link from "next/link";
 import { useData } from "./getData";
+import { useAuth } from "./firebase/authenticate";
 import { url } from "../url";
 
 // single styled folder
 const Folder = ({ folder, id }) => {
   const router = useRouter();
-  const { renameFolder, user } = useData();
+  const { user } = useAuth();
+  const { renameFolder } = useData();
   const [openOptions, setOpenOptions] = useState(false);
   const [newTitle, setNewTitle] = useState(false);
   const [newTitleValue, setNewTitleValue] = useState("");
@@ -36,7 +38,7 @@ const Folder = ({ folder, id }) => {
       withCredentials: true,
       credentials: "include",
       headers: {
-        Authorization: `Bearer ${token}`,
+        Authorization: `Bearer ${user.uid}`,
         "Content-Type": "application/json",
       },
       method: "PUT",
@@ -73,8 +75,8 @@ const Folder = ({ folder, id }) => {
         key={folder}
         href={
           router.pathname === "/[username]/folders"
-            ? `/${user ? user.username : "folder"}/folders/${folder}`
-            : `/${user ? user.username : "folder"}/${folder}`
+            ? `/${user ? user.uid : "folder"}/folders/${folder}`
+            : `/${user ? user.uid : "folder"}/${folder}`
         }
       >
         <a
