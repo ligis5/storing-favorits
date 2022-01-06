@@ -3,7 +3,6 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useRouter } from "next/router";
 import { useState, useEffect } from "react";
 import { url } from "../url";
-import { useAuth } from "./firebase/authenticate";
 import { useData } from "./getData";
 
 const style = {
@@ -14,8 +13,7 @@ const style = {
 
 const AddFile = ({ currentFolder }) => {
   const { addFiles } = useData();
-  const route = useRouter();
-  const { user } = useAuth();
+  const router = useRouter();
   const [adding, setAdding] = useState(false);
   const [newFile, setNewFile] = useState("");
 
@@ -30,13 +28,10 @@ const AddFile = ({ currentFolder }) => {
   // send data to backend
   const sendFile = async (data, id) => {
     const res = await fetch(
-      `${url}/api/user/folders/${route.query.folder}/addFile`,
+      `${url}/api/user/folders/${router.query.folder}/addFile`,
       {
         method: "POST",
-        withCredentials: true,
-        credentials: "include",
         headers: {
-          Authorization: `Bearer ${user.uid}`,
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
@@ -59,7 +54,7 @@ const AddFile = ({ currentFolder }) => {
   const submitFile = (e) => {
     e.preventDefault();
     if (newFile.length > 0) {
-      sendFile(newFile, currentFolder.id);
+      sendFile(newFile, router.query.folder);
       setAdding(false);
       setNewFile("");
     }
@@ -71,7 +66,7 @@ const AddFile = ({ currentFolder }) => {
       setAdding(false);
       setNewFile("");
     };
-  }, [route.asPath]);
+  }, [router.asPath]);
 
   return (
     <div

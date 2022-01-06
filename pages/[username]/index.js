@@ -6,13 +6,10 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import Folders from "../../components/folders";
 import Layout from "../../components/Layout";
 import styles from "../../styles/Main.module.css";
-
-export const getServerSideProps = async ({ req, res }) => {
-  return { props: { token: req.cookies.token || "" } };
-};
+import { getFolders } from "../api/user/folders";
 
 // Home page after logging in
-const MainPage = ({ token }) => {
+const MainPage = ({ data }) => {
   const { folders } = styles;
 
   return (
@@ -25,7 +22,7 @@ const MainPage = ({ token }) => {
           }}
           icon={faCaretSquareLeft}
         />
-        <Folders />
+        <Folders data={data} />
         <FontAwesomeIcon
           icon={faCaretSquareRight}
           style={{
@@ -37,6 +34,15 @@ const MainPage = ({ token }) => {
       </div>
     </Layout>
   );
+};
+
+export const getServerSideProps = async ({ req, res }) => {
+  const files = await getFolders(req, res);
+  return {
+    props: {
+      data: files,
+    },
+  };
 };
 
 export default MainPage;

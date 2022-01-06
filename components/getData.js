@@ -17,50 +17,6 @@ const DataProvider = ({ children }) => {
   const [files, setFiles] = useState({});
   const [currentFolder, setCurrentFolder] = useState();
 
-  const fetchFolders = async () => {
-    const res = await fetch(`${url}/api/user/folders`, {
-      method: "GET",
-      withCredentials: true,
-      credentials: "include",
-      headers: {
-        Authorization: `Bearer ${user.uid}`,
-        "Content-Type": "application/json",
-      },
-    });
-    const foldersRes = await res.json();
-    if (res.ok) {
-      setFolders(foldersRes.folders);
-    } else {
-      console.log(res.status);
-    }
-  };
-
-  const fetchFiles = async () => {
-    // if folder was already fetched return true.
-    const ex = files
-      ? Object.keys(files).filter((file) => file === folderName).length > 0
-        ? true
-        : false
-      : false;
-    // fetch only if it was not fetched yet.
-    if (!ex && folderName) {
-      const currentFolderId = currentFolder ? currentFolder.id : null;
-      const res = await fetch(`${url}/api/user/folders/${currentFolderId}`, {
-        method: "GET",
-        withCredentials: true,
-        credentials: "include",
-        headers: {
-          Authorization: `Bearer ${user.uid}`,
-          "Content-Type": "application/json",
-        },
-      });
-      const filesData = await res.json();
-      if (res.ok) {
-        setFiles({ ...files, [folderName]: filesData });
-      }
-    }
-  };
-
   // add fodler to current folders array
   const addFolder = (f) => {
     return setFolders([...folders, f]);
@@ -105,24 +61,8 @@ const DataProvider = ({ children }) => {
     }
   }, [folderName, folders]);
 
-  useEffect(() => {
-    if (user && currentFolder) {
-      fetchFiles();
-    }
-  }, [currentFolder, user]);
-
-  useEffect(() => {
-    if (user) {
-      fetchFolders();
-    }
-    return () => {
-      setFolders();
-    };
-  }, [user]);
-
   const data = {
     folders,
-    files,
     addFiles,
     addFolder,
     renameFolder,

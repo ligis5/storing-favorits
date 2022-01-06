@@ -5,7 +5,7 @@ import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
 
 // all the files inside folder
-const Files = () => {
+const Files = ({ data }) => {
   const router = useRouter();
   const folderName = router.query.folder;
   const { files, currentFolder } = useData();
@@ -20,8 +20,8 @@ const Files = () => {
 
   return (
     <>
-      {folderFiles ? (
-        Object.values(folderFiles).map((file) => {
+      {data ? (
+        Object.values(data).map((file) => {
           const fileVal = Object.values(file);
           return (
             <File

@@ -1,30 +1,29 @@
 const { db } = require("../../../../components/firebase/initializeServerSide");
+const {
+  checkToken,
+} = require("../../../../components/firebase/authenticateServerSide");
 
-export default async (req, res) => {
-  if (req.method === "GET") {
-    const userIdCookie = req.cookies.token;
-    const userIdToken = req.headers.authorization.split(" ")[1];
-    if (userIdCookie === userIdToken) {
-      try {
-        const snapshot = await db
-          .collection("users")
-          .doc(userIdCookie)
-          .collection("folders")
-          .get();
-
-        let folders = [];
-        snapshot.forEach((folder) => {
-          folders.push(folder.data());
-        });
-        res.status(200).json({ folders });
-      } catch (error) {
-        res.status(404).json({ message: "Data not found" });
-      }
-    } else {
-      res.status(403).json({ message: "No access" });
+export const getFolders = async (req, res) => {
+  let folders = [];
+  try {
+    // check if user auth token exists in firebase
+    const user = await checkToken(req);
+    const userId = user.uid;
+    //  fetch folders belonging to current user
+    try {
+      const snapshot = await db
+        .collection("users")
+        .doc(userId)
+        .collection("folders")
+        .get();
+      snapshot.forEach((folder) => {
+        folders.push(folder.data());
+      });
+    } catch (error) {
+      console.log(error);
     }
-  } else {
-    res.setHeader("Allow", ["GET"]);
-    res.status(405).json({ message: `Method ${req.method} is not allowed` });
+  } catch (error) {
+    console.log(error);
   }
+  return folders;
 };

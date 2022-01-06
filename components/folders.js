@@ -3,13 +3,11 @@ import AddFolder from "./addFolder";
 import { useData } from "./getData";
 
 //contains all the folders
-const Folders = () => {
-  const { folders } = useData();
-
+const Folders = ({ data }) => {
   return (
     <>
-      {folders ? (
-        folders.map((folder) => {
+      {data ? (
+        data.map((folder) => {
           return <Folder folder={folder.name} key={folder.id} id={folder.id} />;
         })
       ) : (

@@ -1,13 +1,15 @@
 const {
   db,
 } = require("../../../../../components/firebase/initializeServerSide");
+const {
+  checkToken,
+} = require("../../../../../components/firebase/authenticateServerSide");
 
 export default async (req, res) => {
   if (req.method === "POST") {
-    const userIdCookie = req.cookies.token;
-    const userIdToken = req.headers.authorization.split(" ")[1];
-
-    if (userIdCookie === userIdToken) {
+    try {
+      const user = await checkToken(req);
+      const userId = user.uid;
       try {
         const link = req.body.file;
         // give url of website and get name of it.
@@ -23,7 +25,7 @@ export default async (req, res) => {
         // post data to firestore, merge true so fields would not be overwritten.
         await db
           .collection("users")
-          .doc(userIdCookie)
+          .doc(userId)
           .collection("folders")
           .doc(req.body.id)
           .collection("websites")
@@ -34,7 +36,7 @@ export default async (req, res) => {
       } catch (error) {
         res.status(404).json({ message: "Data not found" });
       }
-    } else {
+    } catch (error) {
       res.status(403).json({ message: "No access" });
     }
   } else {

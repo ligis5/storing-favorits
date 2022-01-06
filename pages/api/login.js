@@ -1,15 +1,9 @@
 const cookie = require("cookie");
-const {
-  checkToken,
-} = require("../../components/firebase/authenticateServerSide");
 
 export default async (req, res) => {
-  const token = await checkToken(req, res);
-  const tokenId = token.uid;
-
   res.setHeader(
     "Set-Cookie",
-    cookie.serialize("token", tokenId, {
+    cookie.serialize("token", req.headers.authorization.split(" ")[1], {
       httpOnly: true,
       secure: process.env.NODE_ENV !== "development",
       maxAge: 60 * 10,

@@ -42,10 +42,7 @@ const File = ({ file, name, id }) => {
     const res = await fetch(
       `${url}/api/user/folders/${currentFolder.id}/renameFile`,
       {
-        withCredentials: true,
-        credentials: "include",
         headers: {
-          Authorization: `Bearer ${user.uid}`,
           "Content-Type": "application/json",
         },
         method: "PUT",

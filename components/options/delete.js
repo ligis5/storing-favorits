@@ -8,10 +8,7 @@ const Delete = ({ title, closeOptions, path, id }) => {
 
   const sendDelete = async () => {
     const res = await fetch(path, {
-      withCredentials: true,
-      credentials: "include",
       headers: {
-        Authorization: `Bearer ${user.uid}`,
         "Content-Type": "application/json",
       },
       method: "DELETE",

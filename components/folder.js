@@ -35,10 +35,7 @@ const Folder = ({ folder, id }) => {
   // Send folders id and new title
   const sendNewTitle = async (id, newTitle) => {
     const res = await fetch(`${url}/api/user/folders/renameFolder`, {
-      withCredentials: true,
-      credentials: "include",
       headers: {
-        Authorization: `Bearer ${user.uid}`,
         "Content-Type": "application/json",
       },
       method: "PUT",
