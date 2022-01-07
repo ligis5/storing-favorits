@@ -4,17 +4,16 @@ import Image from "next/image";
 import Link from "next/link";
 import { useAuth } from "./firebase/authenticate";
 import { useRouter } from "next/router";
-import { useData } from "./getData";
 
 const Layout = ({ children, title, description }) => {
   const router = useRouter();
-  const { logOut, loggedIn } = useAuth();
-  const { user } = useData();
+  const { logOut, loggedIn, user } = useAuth();
 
   const signOut = async () => {
     await logOut();
     router.push("/login");
   };
+
   return (
     <div>
       <Head>
@@ -26,7 +25,7 @@ const Layout = ({ children, title, description }) => {
         />
       </Head>
       <header className="header">
-        <Link href={user ? `/${user.username}` : "/login"}>
+        <Link href={user ? `/${user.displayName}` : "/login"}>
           <a>
             <Image width="50%" height="50%" alt="folder" src={folderIcon} />
           </a>
@@ -49,11 +48,11 @@ const Layout = ({ children, title, description }) => {
             }}
           >
             {router.pathname === "/[username]/folders" ? (
-              <Link href={user ? `/${user.username}` : "/"}>
+              <Link href={user ? `/${user.displayName}` : "/"}>
                 <h3 style={{ cursor: "pointer" }}>Home</h3>
               </Link>
             ) : (
-              <Link href={user ? `/${user.username}/folders` : "/"}>
+              <Link href={user ? `/${user.displayName}/folders` : "/"}>
                 <h3 style={{ cursor: "pointer" }}>Folders</h3>
               </Link>
             )}

@@ -2,10 +2,8 @@ import styles from "../../styles/Login.module.css";
 import Layout from "../../components/Layout";
 import { useState, useEffect } from "react";
 import { useAuth } from "../../components/firebase/authenticate";
-import { useRouter } from "next/router";
 
 const LoginPage = () => {
-  const router = useRouter();
   const { login, formContainer } = styles;
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -26,12 +24,6 @@ const LoginPage = () => {
       setVisible("flex");
     }
   };
-
-  useEffect(() => {
-    if (user) {
-      router.push(`/${user.uid}`);
-    }
-  }, [user]);
 
   return (
     <Layout>

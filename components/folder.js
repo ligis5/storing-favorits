@@ -72,8 +72,8 @@ const Folder = ({ folder, id }) => {
         key={folder}
         href={
           router.pathname === "/[username]/folders"
-            ? `/${user ? user.uid : "folder"}/folders/${folder}`
-            : `/${user ? user.uid : "folder"}/${folder}`
+            ? `/${user ? user.displayName : "folder"}/folders/${folder}`
+            : `/${user ? user.displayName : "folder"}/${folder}`
         }
       >
         <a

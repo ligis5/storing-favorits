@@ -19,8 +19,8 @@ const FolderPage = ({ data }) => {
   );
 };
 
-export const getServerSideProps = async ({ req, res }) => {
-  const files = await getFiles(req, res);
+export const getServerSideProps = async ({ req, res, params }) => {
+  const files = await getFiles(req, res, params.folder);
 
   return {
     props: {

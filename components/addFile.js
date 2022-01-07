@@ -11,7 +11,7 @@ const style = {
   justifySelf: "center",
 };
 
-const AddFile = ({ currentFolder }) => {
+const AddFile = ({ currentFolder, addData }) => {
   const { addFiles } = useData();
   const router = useRouter();
   const [adding, setAdding] = useState(false);
@@ -42,7 +42,8 @@ const AddFile = ({ currentFolder }) => {
     );
     if (res.ok) {
       const content = await res.json();
-      addFiles(content);
+      console.log(content);
+      addData(content);
       setNewFile("");
     }
     if (!res.ok) {

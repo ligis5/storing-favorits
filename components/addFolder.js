@@ -13,7 +13,7 @@ const style = {
   justifySelf: "center",
 };
 
-const AddFolder = () => {
+const AddFolder = ({ addData }) => {
   const { addFolder } = useData();
   const route = useRouter();
   const { user } = useAuth();
@@ -41,7 +41,7 @@ const AddFolder = () => {
     });
     if (res.ok) {
       const content = await res.json();
-      addFolder(content);
+      addData(content);
       setNewFolder("");
     }
     if (!res.ok) {

@@ -21,7 +21,8 @@ export default async (req, res) => {
           return finalTitle;
         };
         const title = getTitle(link);
-        const doc = { url: req.body.file, title };
+        const timeAdded = Date.now();
+        const file = { url: req.body.file, title, timeAdded, clicks: 0 };
         // post data to firestore, merge true so fields would not be overwritten.
         await db
           .collection("users")
@@ -29,10 +30,10 @@ export default async (req, res) => {
           .collection("folders")
           .doc(req.body.id)
           .collection("websites")
-          .doc(doc.title)
-          .set(doc);
+          .doc(file.title)
+          .set(file);
 
-        res.status(200).json(doc);
+        res.status(200).json(file);
       } catch (error) {
         res.status(404).json({ message: "Data not found" });
       }

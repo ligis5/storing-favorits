@@ -1,7 +1,7 @@
 import Layout from "../../../components/Layout";
 import Folders from "../../../components/folders";
 import styles from "../../../styles/Folders.module.css";
-import getFolders from "../../api/user/folders";
+import { getFolders } from "../../api/user/folders";
 
 // all the folders page
 const FoldersPage = ({ data }) => {

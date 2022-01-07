@@ -6,9 +6,11 @@ import {
   sendPasswordResetEmail,
   signOut,
   onAuthStateChanged,
+  updateProfile,
 } from "firebase/auth";
 import { auth } from "./initialize";
 import { url } from "../../url";
+import { useRouter } from "next/router";
 
 const AuthContext = createContext();
 
@@ -19,14 +21,18 @@ export const useAuth = () => {
 const AuthenticationProvider = ({ children }) => {
   const [loggedIn, setLoggedIn] = useState(false);
   const [user, setUser] = useState(null);
+  const router = useRouter();
 
-  const registerUser = (email, password) => {
-    return createUserWithEmailAndPassword(auth, email, password);
+  const registerUser = (email, password, username) => {
+    return createUserWithEmailAndPassword(auth, email, password, username)
+      .then(updateProfile(auth.currentUser, { displayName: username }))
+      .catch((error) => {
+        console.log(error);
+      });
   };
   const loginUser = (email, password) => {
     return signInWithEmailAndPassword(auth, email, password);
   };
-
   const forgotPassword = (email) => {
     return sendPasswordResetEmail(auth, email);
   };
@@ -66,7 +72,8 @@ const AuthenticationProvider = ({ children }) => {
           if (res.ok) {
             const data = await res.json();
             setLoggedIn(data.success);
-            console.log();
+            // redirect when token cookie is created
+            router.push(`/${user.displayName}`);
           } else {
             console.log(res.status);
             setLoggedIn(false);
@@ -80,6 +87,16 @@ const AuthenticationProvider = ({ children }) => {
       }
     });
   };
+
+  useEffect(() => {
+    // force refresh the token every 10 minutes
+    const handle = setInterval(async () => {
+      const u = auth.currentUser;
+      if (u) await u.getIdToken(true);
+    }, 10 * 60 * 1000);
+
+    return () => clearInterval(handle);
+  }, []);
 
   useEffect(() => {
     checkUser();

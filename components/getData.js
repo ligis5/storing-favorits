@@ -1,5 +1,4 @@
 import { useContext, createContext, useState, useEffect } from "react";
-import { url } from "../url";
 import { useAuth } from "./firebase/authenticate";
 import { useRouter } from "next/router";
 
@@ -14,20 +13,7 @@ const DataProvider = ({ children }) => {
   const folderName = router.query.folder;
   const { user } = useAuth();
   const [folders, setFolders] = useState([]);
-  const [files, setFiles] = useState({});
   const [currentFolder, setCurrentFolder] = useState();
-
-  // add fodler to current folders array
-  const addFolder = (f) => {
-    return setFolders([...folders, f]);
-  };
-  // add file to current files array
-  const addFiles = (f) => {
-    const addedFile = {
-      [folderName]: [...files[folderName], { [f.title]: f }],
-    };
-    return setFiles({ ...files, ...addedFile });
-  };
 
   const renameFolder = (id, newName) => {
     if (folders) {
@@ -63,8 +49,6 @@ const DataProvider = ({ children }) => {
 
   const data = {
     folders,
-    addFiles,
-    addFolder,
     renameFolder,
     currentFolder,
     deleteFolder,

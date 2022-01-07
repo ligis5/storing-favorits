@@ -19,11 +19,12 @@ export const getFiles = async (req, res, fName) => {
         .collection("folders")
         .doc(fName)
         .collection("websites")
+        .orderBy("clicks", "desc")
         .get();
       snapshot.forEach((doc) => {
-        const d = { ...doc.data(), id: doc.id };
+        const file = { ...doc.data() };
 
-        files.push({ files: d });
+        files.push(file);
       });
     } catch (error) {
       console.log(error);

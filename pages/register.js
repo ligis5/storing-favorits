@@ -26,13 +26,14 @@ const RegisterPage = () => {
     }
     if (password === repeatPassword) {
       try {
-        await registerUser(email, password);
+        await registerUser(email, password, username);
         setRegistered(true);
       } catch (error) {
         if (error.code === "auth/email-already-in-use") {
           setText("This email is already registered, use different email");
           setVisible("flex");
         } else {
+          console.log(error);
           setText("Sorry an error has occurred please try again");
           setVisible("flex");
         }

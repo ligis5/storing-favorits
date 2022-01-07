@@ -9,14 +9,14 @@ import { useData } from "./getData";
 import { useRouter } from "next/router";
 
 // single file
-const File = ({ file, name, id }) => {
-  const { user } = useAuth();
-  const { currentFolder } = useData();
-  const route = useRouter();
+const File = ({ file, name, id, clicks }) => {
+  const router = useRouter();
   const [image, setImage] = useState();
   const [openOptions, setOpenOptions] = useState(false);
   const [newTitle, setNewTitle] = useState(false);
   const [newTitleValue, setNewTitleValue] = useState("");
+  const [urlClicks, setUrlClicks] = useState(clicks);
+  const [title, setTitle] = useState(name);
 
   const openClose = () => {
     setOpenOptions(openOptions ? false : true);
@@ -38,21 +38,21 @@ const File = ({ file, name, id }) => {
     getImage();
   }, []);
 
-  const sendNewTitle = async (oldTitle, newTitle) => {
+  const updateFile = async (title, data) => {
     const res = await fetch(
-      `${url}/api/user/folders/${currentFolder.id}/renameFile`,
+      `${url}/api/user/folders/${router.query.folder}/updateFile`,
       {
         headers: {
           "Content-Type": "application/json",
         },
         method: "PUT",
-        body: JSON.stringify({ oldTitle, newTitle }),
+        body: JSON.stringify({ title, data }),
       }
     );
     if (!res.ok) {
       console.log(res.statusText);
     } else {
-      changeTitle();
+      if (newTitleValue) setTitle(newTitleValue);
       return;
     }
   };
@@ -71,8 +71,15 @@ const File = ({ file, name, id }) => {
 
   const submitTitle = (e) => {
     e.preventDefault();
-    sendNewTitle(name, newTitleValue);
+    updateFile(name, { title: newTitleValue });
     setNewTitleValue("");
+    changeTitle();
+  };
+
+  // adds 1 to amount of clicks on this link.
+  const addClick = () => {
+    setUrlClicks(urlClicks + 1);
+    return urlClicks;
   };
 
   return (
@@ -84,29 +91,32 @@ const File = ({ file, name, id }) => {
       }}
     >
       {image ? (
-        <div style={{ display: "grid", justifyContent: "center" }}>
-          <a href={file.url} target="_blank" rel="noopener noreferrer">
-            <div
-              style={{
-                width: "32px",
-                height: "32px",
-                justifySelf: "center",
-                display: "flex",
-                justifyContent: "center",
-                alignItems: "center",
-                backgroundColor: "black",
-                borderRadius: "15%",
-              }}
-            >
-              <Image
-                alt={name}
-                src={image}
-                width="20"
-                height="20"
-                layout="fixed"
-              />
-            </div>
-          </a>
+        <div
+          style={{ display: "grid", justifyContent: "center" }}
+          onClick={() => updateFile(name, { clicks: addClick() })}
+        >
+          {/* <a href={file} target="_blank" rel="noopener noreferrer"> */}
+          <div
+            style={{
+              width: "32px",
+              height: "32px",
+              justifySelf: "center",
+              display: "flex",
+              justifyContent: "center",
+              alignItems: "center",
+              backgroundColor: "black",
+              borderRadius: "15%",
+            }}
+          >
+            <Image
+              alt={name}
+              src={image}
+              width="20"
+              height="20"
+              layout="fixed"
+            />
+          </div>
+          {/* </a> */}
         </div>
       ) : (
         <FontAwesomeIcon style={style} icon={faFileImage} />
@@ -120,7 +130,7 @@ const File = ({ file, name, id }) => {
             fontSize: "calc(50% + 0.5vw)",
           }}
         >
-          {name}
+          {title}
         </h5>
       ) : (
         <>
@@ -186,7 +196,7 @@ const File = ({ file, name, id }) => {
             title={id}
             closeOptions={() => setOpenOptions(false)}
             changeTitle={changeTitle}
-            path={`${url}/api/user/folders/${currentFolder.id}/deleteFile`}
+            path={`${url}/api/user/folders/${router.query.folder}/deleteFile`}
           />
         </>
       )}

@@ -11,15 +11,17 @@ export default async (req, res) => {
       const user = await checkToken(req);
       const userId = user.uid;
       try {
-        // delete field in firestore.
+        // update field in firestore document
+        const { data, title } = req.body;
+        console.log(data);
         await db
           .collection("users")
           .doc(userId)
           .collection("folders")
           .doc(req.query.folder)
           .collection("websites")
-          .doc(req.body.oldTitle)
-          .update({ title: req.body.newTitle });
+          .doc(title)
+          .update(data);
         res.status(200).json({
           status: "OK",
         });

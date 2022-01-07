@@ -1,41 +1,42 @@
 import File from "./file";
 import AddFile from "./addFile";
 import { useData } from "./getData";
-import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
 
 // all the files inside folder
 const Files = ({ data }) => {
-  const router = useRouter();
-  const folderName = router.query.folder;
-  const { files, currentFolder } = useData();
-  const [folderFiles, setFolderFiles] = useState([]);
+  const { currentFolder } = useData();
+  const [files, setFiles] = useState(null);
+
+  const addData = (newFile) => {
+    setFiles([...files, newFile]);
+  };
 
   useEffect(() => {
-    if (files && folderName) {
-      setFolderFiles(files[folderName]);
-    }
-    return () => setFolderFiles([]);
-  });
+    setFiles(data);
+    return () => {
+      setFiles();
+    };
+  }, [data]);
 
   return (
     <>
-      {data ? (
-        Object.values(data).map((file) => {
-          const fileVal = Object.values(file);
+      {files ? (
+        Object.values(files).map((file) => {
           return (
             <File
-              id={fileVal[0].id}
-              file={fileVal[0].url}
-              key={fileVal[0].url}
-              name={fileVal[0].title}
+              id={file.title}
+              file={file.url}
+              key={file.url}
+              name={file.title}
+              clicks={file.clicks}
             />
           );
         })
       ) : (
         <></>
       )}
-      <AddFile currentFolder={currentFolder} />
+      <AddFile currentFolder={currentFolder} addData={addData} />
     </>
   );
 };
