@@ -12,20 +12,21 @@ export default async (req, res) => {
       const userId = user.uid;
       try {
         // update field in firestore document
-        const { data, title } = req.body;
-        console.log(data);
+        const { data, id } = req.body;
+
         await db
           .collection("users")
           .doc(userId)
           .collection("folders")
           .doc(req.query.folder)
           .collection("websites")
-          .doc(title)
+          .doc(id)
           .update(data);
         res.status(200).json({
           status: "OK",
         });
       } catch (error) {
+        console.log(error);
         res.status(404).json({ message: "Data not found" });
       }
     } catch (error) {

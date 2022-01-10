@@ -10,8 +10,9 @@ export default async (req, res) => {
     try {
       const user = await checkToken(req);
       const userId = user.uid;
+
       try {
-        const title = req.body;
+        const id = req.body;
         // delete field in firestore.
         await db
           .collection("users")
@@ -19,7 +20,7 @@ export default async (req, res) => {
           .collection("folders")
           .doc(req.query.folder)
           .collection("websites")
-          .doc(title)
+          .doc(id)
           .delete();
         res.status(200).json({
           status: "OK",

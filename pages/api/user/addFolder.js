@@ -17,8 +17,8 @@ export default async (req, res) => {
           .doc(userId)
           .collection("folders")
           .doc(folder);
-        ref.set({ name: folder, id: ref.id });
-        res.status(200).json({ name: folder, id: ref.id });
+        ref.set({ title: folder, id: ref.id, clicks: 0 });
+        res.status(200).json({ title: folder, id: ref.id });
       } catch (error) {
         res.status(404).json({ message: "Data not found" });
       }

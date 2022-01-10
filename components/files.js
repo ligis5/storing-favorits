@@ -19,17 +19,23 @@ const Files = ({ data }) => {
     };
   }, [data]);
 
+  const removeFile = (id) => {
+    const filderedFiles = Object.values(files).filter((file) => file.id !== id);
+    setFiles(filderedFiles);
+  };
+
   return (
     <>
       {files ? (
         Object.values(files).map((file) => {
           return (
             <File
-              id={file.title}
+              id={file.id}
               file={file.url}
               key={file.url}
               name={file.title}
               clicks={file.clicks}
+              removeFile={removeFile}
             />
           );
         })

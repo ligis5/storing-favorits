@@ -6,20 +6,28 @@ import {
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useRouter } from "next/router";
 import Options from "./options/options";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Link from "next/link";
-import { useData } from "./getData";
 import { useAuth } from "./firebase/authenticate";
 import { url } from "../url";
+import { updateData } from "./options/updateData";
 
 // single styled folder
-const Folder = ({ folder, id }) => {
+const Folder = ({ folder, id, removeFolder, clicks }) => {
   const router = useRouter();
   const { user } = useAuth();
-  const { renameFolder } = useData();
   const [openOptions, setOpenOptions] = useState(false);
+  const [title, setTitle] = useState("");
   const [newTitle, setNewTitle] = useState(false);
   const [newTitleValue, setNewTitleValue] = useState("");
+  const [urlClicks, setUrlClicks] = useState(clicks);
+
+  useEffect(() => {
+    setTitle(folder);
+    return () => {
+      setTitle("");
+    };
+  }, [folder]);
 
   const style = {
     fontSize: "calc(2vh + 2vw)",
@@ -32,32 +40,29 @@ const Folder = ({ folder, id }) => {
     setOpenOptions(openOptions ? false : true);
   };
 
-  // Send folders id and new title
-  const sendNewTitle = async (id, newTitle) => {
-    const res = await fetch(`${url}/api/user/folders/renameFolder`, {
-      headers: {
-        "Content-Type": "application/json",
-      },
-      method: "PUT",
-      body: JSON.stringify({ id, newTitle }),
-    });
-    if (!res.ok) {
-      console.log(res.statusText);
-    }
-    if (res.ok) {
-      renameFolder(id, newTitle);
-      changeTitle();
-    }
-  };
   // show input and close file options.
   const changeTitle = () => {
     setNewTitle(newTitle ? false : true);
     setOpenOptions(false);
+    setNewTitleValue("");
   };
 
-  const submitTitle = (e) => {
+  const submitTitle = async (e) => {
     e.preventDefault();
-    sendNewTitle(id, newTitleValue);
+    const t = await updateData(
+      id,
+      { title: newTitleValue },
+      `${url}/api/user/folders/updateFolder`
+    );
+    if (t) setTitle(t);
+    setNewTitle(newTitle ? false : true);
+    setNewTitleValue("");
+  };
+
+  // adds 1 to amount of clicks on this link.
+  const addClick = () => {
+    setUrlClicks(urlClicks + 1);
+    return urlClicks;
   };
 
   return (
@@ -69,7 +74,7 @@ const Folder = ({ folder, id }) => {
       }}
     >
       <Link
-        key={folder}
+        key={title}
         href={
           router.pathname === "/[username]/folders"
             ? `/${user ? user.displayName : "folder"}/folders/${folder}`
@@ -77,6 +82,13 @@ const Folder = ({ folder, id }) => {
         }
       >
         <a
+          onClick={() =>
+            updateData(
+              id,
+              { clicks: addClick() },
+              `${url}/api/user/folders/updateFolder`
+            )
+          }
           style={{
             display: "flex",
             justifyContent: "center",
@@ -86,7 +98,7 @@ const Folder = ({ folder, id }) => {
         >
           <FontAwesomeIcon
             style={style}
-            icon={router.query.folder === folder ? faFolderOpen : faFolder}
+            icon={router.query.folder === title ? faFolderOpen : faFolder}
           />
         </a>
       </Link>
@@ -99,7 +111,7 @@ const Folder = ({ folder, id }) => {
             fontSize: "calc(50% + 0.5vw)",
           }}
         >
-          {folder}
+          {title}
         </h5>
       ) : (
         <>
@@ -166,7 +178,9 @@ const Folder = ({ folder, id }) => {
             closeOptions={() => setOpenOptions(false)}
             changeTitle={changeTitle}
             id={id}
+            removeFolder={removeFolder}
             path={`${url}/api/user/folders/deleteFolder`}
+            dataType="folder"
           />
         </>
       )}

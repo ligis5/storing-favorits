@@ -3,7 +3,7 @@ const {
   checkToken,
 } = require("../../../../components/firebase/authenticateServerSide");
 
-export const getFolders = async (req, res) => {
+export const getFolders = async (req, res, limit) => {
   let folders = [];
   try {
     // check if user auth token exists in firebase
@@ -15,6 +15,8 @@ export const getFolders = async (req, res) => {
         .collection("users")
         .doc(userId)
         .collection("folders")
+        .orderBy("clicks", "desc")
+        .limit(limit)
         .get();
       snapshot.forEach((folder) => {
         folders.push(folder.data());

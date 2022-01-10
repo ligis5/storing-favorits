@@ -4,12 +4,11 @@ import { useState, useEffect } from "react";
 import Options from "./options/options";
 import Image from "next/image";
 import { url } from "../url";
-import { useAuth } from "./firebase/authenticate";
-import { useData } from "./getData";
 import { useRouter } from "next/router";
+import { updateData } from "./options/updateData";
 
 // single file
-const File = ({ file, name, id, clicks }) => {
+const File = ({ file, name, id, clicks, removeFile }) => {
   const router = useRouter();
   const [image, setImage] = useState();
   const [openOptions, setOpenOptions] = useState(false);
@@ -38,25 +37,6 @@ const File = ({ file, name, id, clicks }) => {
     getImage();
   }, []);
 
-  const updateFile = async (title, data) => {
-    const res = await fetch(
-      `${url}/api/user/folders/${router.query.folder}/updateFile`,
-      {
-        headers: {
-          "Content-Type": "application/json",
-        },
-        method: "PUT",
-        body: JSON.stringify({ title, data }),
-      }
-    );
-    if (!res.ok) {
-      console.log(res.statusText);
-    } else {
-      if (newTitleValue) setTitle(newTitleValue);
-      return;
-    }
-  };
-
   const style = {
     fontSize: "calc(2vh + 2vw)",
     color: "rgb(137, 43, 226)",
@@ -69,9 +49,15 @@ const File = ({ file, name, id, clicks }) => {
     setOpenOptions(false);
   };
 
-  const submitTitle = (e) => {
+  const submitTitle = async (e) => {
     e.preventDefault();
-    updateFile(name, { title: newTitleValue });
+    const t = await updateData(
+      id,
+      { title: newTitleValue },
+      `${url}/api/user/folders/${router.query.folder}/updateFile`
+    );
+    // if title was changed successfully in database then change it in front end
+    if (t) setTitle(t);
     setNewTitleValue("");
     changeTitle();
   };
@@ -91,32 +77,40 @@ const File = ({ file, name, id, clicks }) => {
       }}
     >
       {image ? (
-        <div
-          style={{ display: "grid", justifyContent: "center" }}
-          onClick={() => updateFile(name, { clicks: addClick() })}
-        >
-          {/* <a href={file} target="_blank" rel="noopener noreferrer"> */}
-          <div
-            style={{
-              width: "32px",
-              height: "32px",
-              justifySelf: "center",
-              display: "flex",
-              justifyContent: "center",
-              alignItems: "center",
-              backgroundColor: "black",
-              borderRadius: "15%",
-            }}
+        <div style={{ display: "grid", justifyContent: "center" }}>
+          <a
+            onClick={() =>
+              updateData(
+                id,
+                { clicks: addClick() },
+                `${url}/api/user/folders/${router.query.folder}/updateFile`
+              )
+            }
+            href={file}
+            target="_blank"
+            rel="noopener noreferrer"
           >
-            <Image
-              alt={name}
-              src={image}
-              width="20"
-              height="20"
-              layout="fixed"
-            />
-          </div>
-          {/* </a> */}
+            <div
+              style={{
+                width: "32px",
+                height: "32px",
+                justifySelf: "center",
+                display: "flex",
+                justifyContent: "center",
+                alignItems: "center",
+                backgroundColor: "black",
+                borderRadius: "15%",
+              }}
+            >
+              <Image
+                alt={name}
+                src={image}
+                width="20"
+                height="20"
+                layout="fixed"
+              />
+            </div>
+          </a>
         </div>
       ) : (
         <FontAwesomeIcon style={style} icon={faFileImage} />
@@ -193,10 +187,13 @@ const File = ({ file, name, id, clicks }) => {
             }}
           ></div>
           <Options
-            title={id}
+            title={name}
+            id={id}
             closeOptions={() => setOpenOptions(false)}
             changeTitle={changeTitle}
+            removeFile={removeFile}
             path={`${url}/api/user/folders/${router.query.folder}/deleteFile`}
+            dataType="file"
           />
         </>
       )}

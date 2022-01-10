@@ -8,16 +8,21 @@ export default async (req, res) => {
     try {
       const user = await checkToken(req);
       const userId = user.uid;
+
       try {
-        const { newTitle, id } = req.body;
+        const { data, id } = req.body;
+
         await db
           .collection("users")
           .doc(userId)
           .collection("folders")
           .doc(id)
-          .set({ name: newTitle }, { merge: true });
-        res.status(200).json(newTitle);
+          .update(data);
+        res.status(200).json({
+          status: "OK",
+        });
       } catch (error) {
+        console.log(error);
         res.status(404).json({ message: "Data not found" });
       }
     } catch (error) {

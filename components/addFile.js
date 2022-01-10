@@ -42,7 +42,6 @@ const AddFile = ({ currentFolder, addData }) => {
     );
     if (res.ok) {
       const content = await res.json();
-      console.log(content);
       addData(content);
       setNewFile("");
     }

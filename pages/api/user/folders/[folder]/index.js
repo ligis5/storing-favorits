@@ -22,7 +22,7 @@ export const getFiles = async (req, res, fName) => {
         .orderBy("clicks", "desc")
         .get();
       snapshot.forEach((doc) => {
-        const file = { ...doc.data() };
+        const file = { ...doc.data(), id: doc.id };
 
         files.push(file);
       });

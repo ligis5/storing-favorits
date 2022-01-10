@@ -1,13 +1,25 @@
 .folders {
   margin-top: 50px;
+  padding-left: 40px;
+  padding-right: 40px;
   display: flex;
   align-items: center;
   gap: 5vw;
-  width: 100%;
+  width: calc(100% - 80px);
   border-top: 1px solid black;
   border-bottom: 1px solid black;
+  overflow-x: scroll;
+  scroll-behavior: smooth;
+}
+.folders::-webkit-scrollbar {
+  height: 5px;
+  background-color: rgb(137, 43, 226);
 }
 
+.folders::-webkit-scrollbar-thumb {
+  background-color: black;
+  outline: 1px solid slategrey;
+}
 .links {
   margin-left: 5px;
   margin-top: 50px;

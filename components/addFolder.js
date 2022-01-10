@@ -3,8 +3,6 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useRouter } from "next/router";
 import { useState, useEffect } from "react";
 import { url } from "../url";
-import { useAuth } from "./firebase/authenticate";
-import { useData } from "./getData";
 
 const style = {
   fontSize: "calc(2vh + 2vw)",
@@ -14,9 +12,7 @@ const style = {
 };
 
 const AddFolder = ({ addData }) => {
-  const { addFolder } = useData();
   const route = useRouter();
-  const { user } = useAuth();
   const [adding, setAdding] = useState(false);
   const [newFolder, setNewFolder] = useState("");
 
@@ -84,6 +80,7 @@ const AddFolder = ({ addData }) => {
             textAlign: "center",
             color: "white",
             fontSize: "calc(50% + 0.5vw)",
+            whiteSpace: "nowrap",
           }}
         >
           Add Folder
